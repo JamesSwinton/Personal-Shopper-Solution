@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/splashScreenLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#323e46"
+        android:longClickable="true"
+        tools:context=".Activities.MainActivities.SplashScreenActivity">
+
+        <ImageView
+            android:id="@+id/splashScreenLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tint="#FFF"
+            android:src="@drawable/zebra_logo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/version"
+            android:layout_width="match_parent"
+            android:layout_height="17dp"
+            android:layout_marginBottom="8dp"
+            android:textAlignment="center"
+            android:textColor="#FFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="V1.0.0" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

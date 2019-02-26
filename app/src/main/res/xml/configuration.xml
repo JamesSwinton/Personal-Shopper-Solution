@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Products">
+
+        <ListPreference
+            android:key="currency"
+            android:title="Select Currency"
+            android:summary="Choose which currency to display"
+            android:defaultValue="£"
+            android:entries="@array/currencies"
+            android:entryValues="@array/currency_values">
+        </ListPreference>
+
+        <Preference
+            android:key="edit_stock_list"
+            android:title="Edit Stock / Offers / Shopping Lists"
+            android:summary="Add or remove stock from internal product, offer and shopping lists">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.ses.zebra.pssdemo_2019"
+                android:targetClass="com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.StockListActivity">
+            </intent>
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Hands Free Mode">
+
+        <Preference
+            android:key="hands_free_scanning"
+            android:title="Hands Free Scanning"
+            android:summary="Enable / disable hands free scanning">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.symbol.autoscanmgrsetting"
+                android:targetClass="com.symbol.autoscanmgrsetting.AutoScanActivity">
+            </intent>
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="MQTT">
+
+        <SwitchPreference
+            android:key="mqtt_enabled"
+            android:title="Enable MQTT Messaging"
+            android:defaultValue="false">
+        </SwitchPreference>
+
+        <CheckBoxPreference
+            android:key="mqtt_use_custom_broker"
+            android:title="Use Custom MQTT Server"
+            android:dependency="mqtt_enabled"
+            android:defaultValue="false">
+        </CheckBoxPreference>
+
+        <EditTextPreference
+            android:key="mqtt_broker"
+            android:title="MQTT Server"
+            android:dependency="mqtt_use_custom_broker">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="mqtt_broker_user"
+            android:title="Server Username"
+            android:summary="Enter username for custom MQTT Server"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:dependency="mqtt_use_custom_broker"
+            android:inputType="text">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="mqtt_broker_pass"
+            android:title="Server Password"
+            android:summary="Enter a unique MQTT Sub-Topic Identifier"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:dependency="mqtt_use_custom_broker"
+            android:inputType="textPassword">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="mqtt_topic"
+            android:title="Current Topic"
+            android:defaultValue="PSSDEMO/MQTT/DEFAULT/DEFAULT/"
+            android:dependency="mqtt_enabled"
+            android:enabled="false">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="mqtt_topic_identifier"
+            android:title="Unique Topic Identifier"
+            android:summary="Enter a unique MQTT Topic Identifier"
+            android:selectAllOnFocus="true"
+            android:defaultValue="DEFAULT"
+            android:singleLine="true"
+            android:dependency="mqtt_enabled"
+            android:inputType="textCapCharacters">
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="mqtt_sub_topic_identifier"
+            android:title="Unique Sub-Topic Identifier"
+            android:summary="Enter a unique MQTT Sub-Topic Identifier"
+            android:selectAllOnFocus="true"
+            android:defaultValue="DEFAULT"
+            android:singleLine="true"
+            android:dependency="mqtt_enabled"
+            android:inputType="textCapCharacters">
+        </EditTextPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="WFC">
+
+        <SwitchPreference
+            android:key="wfc_enabled"
+            android:title="Enable WFC"
+            android:summary="Enable or disable Work Force Connect"
+            android:defaultValue="false">
+        </SwitchPreference>
+
+        <EditTextPreference
+            android:key="wfc_provisioning_code"
+            android:title="WFC Activation Code"
+            android:summary="Update Work Force Connect Activation Code"
+            android:dependency="wfc_enabled"
+            android:selectAllOnFocus="true"
+            android:defaultValue="@string/default_wfc_activation_code"
+            android:singleLine="true"
+            android:inputType="textCapCharacters">
+        </EditTextPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="VLC">
+
+        <SwitchPreference
+            android:key="vlc_enabled"
+            android:title="Enable VLC"
+            android:summary="Enable or disable Signify's VLC"
+            android:defaultValue="false">
+        </SwitchPreference>
+
+        <EditTextPreference
+            android:key="vlc_config_string"
+            android:title="VLC Configuration String"
+            android:summary="Update VLC Configuration String"
+            android:dependency="vlc_enabled"
+            android:selectAllOnFocus="true"
+            android:defaultValue="@string/app_configuration_eu"
+            android:singleLine="true">
+        </EditTextPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Contextual Voice">
+
+        <SwitchPreference
+            android:key="contextual_voice_enabled"
+            android:title="Enable Contextual Voice"
+            android:summary="Enable or disable Contextual Voice"
+            android:defaultValue="false">
+        </SwitchPreference>
+
+        <EditTextPreference
+            android:key="contextual_voice_config_string"
+            android:title="AI Configuration String"
+            android:summary="Update AI configuration string to connect to custom DialogFlow instance"
+            android:dependency="contextual_voice_enabled"
+            android:selectAllOnFocus="true"
+            android:defaultValue="@string/default_ai_access_token"
+            android:singleLine="true">
+        </EditTextPreference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

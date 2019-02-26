@@ -1,0 +1,88 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+    }
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.ses.zebra.pssdemo_2019"
+        minSdkVersion 22 // Support 22+ (MC18 = 22 (Lollipop) | PS20 = 28 (Oreo))
+        targetSdkVersion 27
+        versionCode 2
+        versionName "2.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    // compileOnly fileTree(include: ['com.symbol.emdk.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    // Zebra Libraries
+    // implementation 'com.symbol:emdk:7.0.0'
+
+    // Preference Support Library FIX
+    implementation 'com.takisoft.fix:preference-v7:27.1.1.1'
+    // Support Libraries
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    // Google Libraries
+    implementation 'com.google.code.gson:gson:2.8.0'
+    // Json Parser
+    implementation 'ai.api:sdk:2.0.7@aar'
+    // DialogFlow Speech
+    implementation 'ai.api:libai:1.6.12'
+    // VLC Lighting & Maps SDK
+    implementation project(path: ':indoorpositioning')
+    implementation project(path: ':indoormaps')
+    // MQTT Library
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    // QR Code Generator
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
+    // Ini File Parser
+    implementation files('libs/ini4j-0.5.4.jar')
+    // Glide Image Processing Library
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    // WFC Libraries
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation(name: 'android-service', ext: 'aar')
+    implementation(name: 'android-common', ext: 'aar')
+    implementation(name: 'android-gps-location', ext: 'aar')
+    implementation(name: 'android-location', ext: 'aar')
+    implementation files('libs/j-common.jar')
+    implementation files('libs/j-core.jar')
+    implementation files('libs/vocoder.jar')
+    implementation files('libs/vplib.jar')
+    implementation files('libs/com.symbol.emdk.jar')
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="start"
+    android:layout_margin="10dp">
+
+    <RelativeLayout
+        android:id="@+id/messageTextContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="250dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/chat_rounded_rectangle_received">
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="250dp"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:textColor="@color/white"
+            tools:text="Please send a message to one of our representatives. Please send a message to one of our representatives. Please send a message to one of our representatives."  />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/messageSentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:textSize="5pt"
+            tools:text="12:22AM"/>
+
+    </LinearLayout>
+
+</LinearLayout>

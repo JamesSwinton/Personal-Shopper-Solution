@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:id="@+id/activity_contact_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Activities.AssistantActivities.WorkForceConnectActivities.PushToTalkActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimary"
+            android:weightSum="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/headerIcon"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="0.15"
+                android:tint="#FFF"
+                android:src="@drawable/ic_cross" />
+
+            <TextView
+                android:id="@+id/headerText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-light"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="32sp"
+                android:gravity="center"
+                android:layout_weight="0.85"
+                android:text="zChat Assistant"/>
+
+        </LinearLayout>
+
+        <!--
+             A fragment holding a contact list will be added to this empty frame at runtime.
+             During idle operation it's the full contact list. During a call, it's replaced
+             by the In-Call list.
+         -->
+
+        <FrameLayout
+            android:id="@+id/fragmentHolder"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/pushToTalkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:paddingLeft="100dp"
+            android:paddingRight="100dp"
+            android:background="@color/pushToTalk"
+            android:textColor="@color/normal"
+            android:text="@string/push_to_talk"/>
+
+    </LinearLayout>
+</layout>

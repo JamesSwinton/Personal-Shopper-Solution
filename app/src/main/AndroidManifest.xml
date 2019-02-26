@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ses.zebra.pssdemo_2019">
+
+    <!-- Permissions -->
+    <uses-permission android:name="com.symbol.emdk.permission.EMDK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- WFC Permissions -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.START_BACKGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <!-- Include EMDK Library -->
+        <uses-library
+            android:name="com.symbol.emdk"
+            android:required="false" />
+
+        <!-- WFC Service -->
+        <service android:name="com.slacorp.eptt.android.service.CoreService" />
+
+        <!-- MQTT Service -->
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <!-- WFC PTT Receiver -->
+        <receiver
+            android:name="com.slacorp.eptt.android.service.BootReceiver"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Splash Screen Activity (Launcher) -->
+        <activity
+            android:name=".Activities.MainActivities.SplashScreenActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="InnerclassSeparator">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activities.SubActivities.NavigationMenuActivity"
+            android:launchMode="singleTop"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.SettingsActivities.SettingsActivity"
+            android:parentActivityName=".Activities.MainActivities.BasketActivity"
+            tools:ignore="InnerclassSeparator">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.MainActivities.BasketActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.SettingsActivities.StockListActivity"
+            android:parentActivityName=".Activities.SettingsActivities.SettingsActivity"
+            tools:ignore="InnerclassSeparator">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.SettingsActivities.SettingsActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.SettingsActivities.AddOrEditStock"
+            android:parentActivityName=".Activities.SettingsActivities.StockListActivity"
+            tools:ignore="InnerclassSeparator">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.SettingsActivities.StockListActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.MainActivities.BasketActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.SubActivities.ProductActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.MainActivities.ShoppingListActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.MainActivities.OffersListActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.MainActivities.VlcLightingActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AssistantActivities.MessageAssistantActivity"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.SubActivities.EndShopActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AssistantActivities.WorkForceConnectActivities.ChatAssistantActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AssistantActivities.WorkForceConnectActivities.PushToTalkActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".Activities.AssistantActivities.VoiceAssistantActivity"
+            tools:ignore="InnerclassSeparator" />
+
+        <!-- ============================================================ -->
+        <!-- WFC CONNECT META DATA -->
+        <!-- ============================================================ -->
+
+
+        <!-- useVoicePrivacy should always be true -->
+        <meta-data
+            android:name="useVoicePrivacy"
+            android:value="true" />
+
+        <!-- This is used by the service to get resources from the application. see com.slacorp.eptt.android.service.ServiceResources -->
+        <meta-data
+            android:name="serviceResources"
+            android:value="com.ses.zebra.pssdemo_2019.Services.ServiceResourcesReal" />
+
+        <!-- This is used by the service post various notifications. see com.slacorp.eptt.android.service.ServiceNotification -->
+        <meta-data
+            android:name="serviceNotification"
+            android:value="com.ses.zebra.pssdemo_2019.Services.ServiceNotificationReal" />
+
+        <!-- This is used by the service post various intents from notifications. see com.slacorp.eptt.android.service.ServiceIntents -->
+        <meta-data
+            android:name="serviceIntent"
+            android:value="com.ses.zebra.pssdemo_2019.Services.ServiceIntentReal" />
+
+        <!-- Set this to your main/call activity. It will be used by the service to launch that activity when a call starts, if needed -->
+        <meta-data
+            android:name="uiCallClass"
+            android:value=".Activities.AssistantActivities.WorkForceConnectActivities.PushToTalkActivity" />
+
+    </application>
+
+</manifest>

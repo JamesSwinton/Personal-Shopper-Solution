@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/voiceAssistantContainer"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/voiceAssistantIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:src="@drawable/ic_microphone" />
+
+        <TextView
+            android:id="@+id/voiceAssistantText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:drawableEnd="@drawable/ic_next"
+            android:gravity="center"
+            android:text="Voice Assistant"
+            android:textSize="8pt"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/messageAssistantContainer"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/messageAssistantIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:tint="#F2BE2C"
+            android:src="@drawable/ic_message"/>
+
+        <TextView
+            android:id="@+id/messageAssistantText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:drawableEnd="@drawable/ic_next"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="8pt"
+            android:text="Message Assistant"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/callAssistantContainer"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/callAssistantIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:src="@drawable/ic_call"/>
+
+        <TextView
+            android:id="@+id/callAssistantText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:drawableEnd="@drawable/ic_next"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="8pt"
+            android:text="Call Assistant"/>
+
+    </LinearLayout>
+
+</LinearLayout>

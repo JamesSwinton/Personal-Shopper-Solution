@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/offersContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/offerIcon"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_weight="0.25"
+        app:srcCompat="@drawable/ic_label" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_weight="0.75">
+
+        <TextView
+            android:id="@+id/offerTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:text="Title"/>
+
+        <TextView
+            android:id="@+id/offerContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:text="content"/>
+
+    </LinearLayout>
+
+</LinearLayout>
