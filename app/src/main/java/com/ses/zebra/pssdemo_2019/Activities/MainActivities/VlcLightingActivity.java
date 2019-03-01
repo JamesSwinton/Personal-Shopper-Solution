@@ -1,5 +1,6 @@
 package com.ses.zebra.pssdemo_2019.Activities.MainActivities;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,7 +8,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -41,13 +44,11 @@ import com.ses.zebra.pssdemo_2019.Activities.BaseActivity;
 import com.ses.zebra.pssdemo_2019.App;
 import com.ses.zebra.pssdemo_2019.Debugging.Logger;
 import com.ses.zebra.pssdemo_2019.Fragments.NoMapFragment;
+import com.ses.zebra.pssdemo_2019.Interfaces.WifiEnabledCallback;
 import com.ses.zebra.pssdemo_2019.R;
 import com.ses.zebra.pssdemo_2019.databinding.ActivityVlcLightingBinding;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,13 @@ public class VlcLightingActivity extends BaseActivity {
     private static Map mIndoorMap;
     private static Bitmap regionBitmap;
     private static Bitmap annotationBitmap;
+
+    private static final int mDelayBetweenChecks = 100;
+    private static final int mMaxNumOfChecks = 100;
+    private static int mNumOfConnectedChecks = 0;
+    private static int mNumOfEnabledChecks = 0;
+    private static WifiManager mWifiManager;
+    private static ConnectivityManager mConnectivityManager;
 
     // Regions
     private MapFragment mapFragment;
@@ -455,26 +463,227 @@ public class VlcLightingActivity extends BaseActivity {
 
         @Override
         public void didFailWithError(Error error) {
-            // Restore Progress
+            // Log Error
             Logger.e(TAG, "VLC Location Error: " + error.toString(),
                     new Exception(error.toString()));
 
-            // Build Dialog
-            AlertDialog.Builder locationErrorDialogBuilder = new AlertDialog.Builder(VlcLightingActivity.this)
-                    .setTitle("Locationing Error!")
-                    .setMessage("VLC Locationing encountered an error: \n\n" + error.toString())
-                    .setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
+            // Check for Connection Failed due to WiFi
+            if (error.equals(Error.CONNECTION_FAILED)) {
+                handleConnectionFailedError();
+                return;
+            }
 
-            // Show Dialog without showing navigation
-            AlertDialog locationErrorDialog = locationErrorDialogBuilder.create();
-            locationErrorDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-            locationErrorDialog.show();
-            locationErrorDialog.getWindow().getDecorView().setSystemUiVisibility(
-                    VlcLightingActivity.this.getWindow().getDecorView().getSystemUiVisibility());
-            locationErrorDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+            // Show Error Dialog
+            showDialog("Locationing Error!",
+                    "VLC Locationing encountered an error: \n\n" + error.toString(),
+                    false);
         }
     };
+
+    private void handleConnectionFailedError() {
+        // Check WiFi Enabled
+        if (!wifiEnabled()) {
+            // WiFi not enabled -> Show Dialog with option to enable & re-try
+            AlertDialog.Builder locationErrorDialogBuilder = new AlertDialog.Builder(VlcLightingActivity.this)
+                    .setTitle("Locationing Error!")
+                    .setIcon(R.drawable.ic_error)
+                    .setMessage("VLC Connection Failed due to WiFi being disabled.")
+                    .setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton("ENABLE & RETRY", (dialogInterface, i) -> {
+                        enableWifi(new WifiEnabledCallback() {
+                            @Override
+                            public void onConnected() {
+                                // Restart Positioning
+                                restartPositioning();
+                                // Display Result (Success / Failure)
+                                if (mIndoorPositioning != null && mIndoorPositioning.isRunning()) {
+                                    // Display dialog
+                                    showDialog("Locationing Enabled!",
+                                            "You have connected to the Locationing Service!",
+                                            true);
+                                }
+                            }
+
+                            @Override
+                            public void onConnectionFailed() {
+                                // Show Error Dialog
+                                showDialog("Locationing Error!",
+                                        "VLC Connection failed as you are not connected to a " +
+                                                "valid network. Please manually connect to a valid " +
+                                                "Wifi network and try again.", false);
+                            }
+
+                            @Override
+                            public void onEnableFailed() {
+                                // Show Error Dialog
+                                showDialog("Locationing Error!",
+                                        "There was an error whilst attempting to enable " +
+                                                "WiFi, please manually enable WiFi and try again.",
+                                        false);
+                            }
+                        });
+
+                        // Dismiss this Dialog
+                        dialogInterface.dismiss();
+                    });
+
+            // Show Dialog without showing navigation
+            displayDialogImmersive(locationErrorDialogBuilder);
+            return;
+        }
+
+        // Check WiFi Connected
+        if (!wifiConnected()) {
+            // Show Dialog
+            showDialog("Locationing Error!",
+                    "VLC Connection failed as you are not connected to a valid network. " +
+                            "Please manually connect to a valid Wifi network and try again.",
+                    false);
+            return;
+        }
+
+        // WiFi is valid, show generic connection failed
+        showDialog("Locationing Error!",
+                "VLC Locationing encountered an error: \n\n CONNECTION_FAILED",
+                false);
+    }
+
+    private boolean wifiEnabled() {
+        if (mWifiManager == null) {
+            mWifiManager = (WifiManager) getApplicationContext().
+                    getSystemService(Context.WIFI_SERVICE);
+        }
+        return mWifiManager.isWifiEnabled();
+    }
+
+    private boolean wifiConnected() {
+        // Init Connectivity Manager
+        if (mConnectivityManager == null) {
+            mConnectivityManager = (ConnectivityManager)
+                    getSystemService(CONNECTIVITY_SERVICE);
+        }
+        // Get Network Info
+        NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
+        // Return State of Network
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private void enableWifi(WifiEnabledCallback callback) {
+        // Build Progress Dialog View
+        View wifiProgressDialog = getLayoutInflater().inflate(
+                R.layout.dialog_layout_enable_wifi_progress, null);
+
+        // Build Dialog
+        AlertDialog.Builder wifiProgressDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle("WiFi Assistant")
+                .setView(wifiProgressDialog)
+                .setCancelable(false);
+
+        // Create & Show Dialog
+        AlertDialog wifiDialog = wifiProgressDialogBuilder.create();
+        wifiDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        wifiDialog.show();
+        wifiDialog.getWindow().getDecorView().setSystemUiVisibility(
+                this.getWindow().getDecorView().getSystemUiVisibility());
+        wifiDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+        // Get WifiManager
+        if (mWifiManager == null) {
+            mWifiManager = (WifiManager) getApplicationContext().
+                    getSystemService(Context.WIFI_SERVICE);
+        }
+
+        // Enabled Wifi
+        mWifiManager.setWifiEnabled(true);
+
+        // Reset Holders
+        mNumOfConnectedChecks = 0;
+        mNumOfEnabledChecks = 0;
+
+        // Poll Wifi one a second for 10 seconds to check status
+        mHandler.postDelayed(new Runnable(){
+            public void run(){
+                // Update Checks Variable
+                mNumOfEnabledChecks++;
+
+                // Check Wifi State
+                if (mWifiManager.isWifiEnabled()) {
+                    // Wait a few seconds to connect after enablement
+                    mHandler.postDelayed(() -> {
+                        // Update Checks Variable
+                        mNumOfConnectedChecks++;
+
+                        // Check Connection
+                        if (wifiConnected()) {
+                            wifiDialog.dismiss();
+                            callback.onConnected();
+                            return;
+                        }
+
+                        // Retry
+                        // If less than 10 checks, check again
+                        if (mNumOfConnectedChecks <= mMaxNumOfChecks) {
+                            mHandler.postDelayed(this, mDelayBetweenChecks);
+                        } else {
+                            wifiDialog.dismiss();
+                            callback.onConnectionFailed();
+                        }
+
+                    }, mDelayBetweenChecks);
+                    return;
+                }
+
+                // If less than 10 checks, check again
+                if (mNumOfEnabledChecks <= mMaxNumOfChecks) {
+                    mHandler.postDelayed(this, mDelayBetweenChecks);
+                } else {
+                    wifiDialog.dismiss();
+                    callback.onEnableFailed();
+                }
+            }
+        }, mDelayBetweenChecks);
+    }
+
+    private void restartPositioning() {
+        // Stop Indoor Position & Unregister Listener
+        if (mIndoorPositioning != null) {
+            if (mIndoorPositioning.isRunning()) {
+                mIndoorPositioning.stop();
+            }
+            mIndoorPositioning.unregister();
+        }
+
+        // Register Indoor Positioning Listener
+        if (mIndoorPositioning != null) {
+            mIndoorPositioning.register(indoorPositioningListener, mHandler);
+
+            // Start Indoor Positioning
+            mIndoorPositioning.start();
+        }
+    }
+
+    private void showDialog(String title, String message, boolean success) {
+        // Build Dialog
+        AlertDialog.Builder genericDialogBuilder = new AlertDialog.Builder(VlcLightingActivity.this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .setIcon(success ? R.drawable.ic_success : R.drawable.ic_error);
+
+        // Show Dialog without showing navigation
+        displayDialogImmersive(genericDialogBuilder);
+    }
+
+    private void displayDialogImmersive(AlertDialog.Builder builder) {
+        AlertDialog genericDialog = builder.create();
+        genericDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        genericDialog.show();
+        genericDialog.getWindow().getDecorView().setSystemUiVisibility(
+                VlcLightingActivity.this.getWindow().getDecorView().getSystemUiVisibility());
+        genericDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
 
     /*
      Bottom navigation utility methods
