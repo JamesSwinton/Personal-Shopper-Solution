@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.ses.zebra.pssdemo_2019.Debugging.Logger;
 import com.ses.zebra.pssdemo_2019.POJOs.Config;
+import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
 import com.ses.zebra.pssdemo_2019.POJOs.Meta;
 import com.ses.zebra.pssdemo_2019.POJOs.StockItem;
 import com.ses.zebra.pssdemo_2019.POJOs.Sub.CalcNutrient;
@@ -40,7 +41,7 @@ import java.util.List;
 public class App extends Application implements EMDKListener, StatusListener, DataListener {
 
     // Debugging
-    public static final boolean DEBUGGING = false;
+    public static final boolean DEBUGGING = true;
     private static final String TAG = "Application Class";
 
     // Constants
@@ -55,6 +56,7 @@ public class App extends Application implements EMDKListener, StatusListener, Da
     public static Meta mMeta;
     public static Context mContext;
     public static Scanner mScanner;
+    public static PopUpRegion[] mPopUpRegions;
     public static StockItem[] mStockItems;
     public static String mDeviceSerialNumber;
     public static Config mConfig = new Config();
