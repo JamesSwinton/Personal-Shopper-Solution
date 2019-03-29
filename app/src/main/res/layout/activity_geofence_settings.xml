@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <!-- Header -->
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="75dp"
+      android:orientation="horizontal"
+      android:background="@color/colorPrimary"
+      android:weightSum="1"
+      android:gravity="center">
+
+      <ImageView
+        android:id="@+id/headerIcon"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight="0.15"
+        android:tint="#FFF"
+        android:src="@drawable/ic_back" />
+
+      <TextView
+        android:id="@+id/headerText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-light"
+        android:textAlignment="center"
+        android:textColor="#FFF"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:layout_weight="0.7"
+        android:text="Region Creator"/>
+
+      <ImageView
+        android:id="@+id/saveIcon"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight="0.15"
+        android:tint="#FFF"
+        android:src="@drawable/ic_save" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/pop_up_details_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+      <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+          android:id="@+id/pop_up_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Title"
+          android:inputType="text"/>
+      </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+          android:id="@+id/pop_up_display_time"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Time to Display in Seconds"
+          android:inputType="number"/>
+      </android.support.design.widget.TextInputLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.95"
+          android:layout_gravity="center"
+          android:paddingStart="4dp"
+          android:text="Display Message in Pop Up ?"/>
+
+        <CheckBox
+          android:id="@+id/display_pop_up_message"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.05"
+          android:layout_gravity="center"
+          android:paddingEnd="-1dp"
+          android:checked="true"/>
+
+      </LinearLayout>
+
+      <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+          android:id="@+id/pop_up_message"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="Message"
+          android:inputType="text"/>
+      </android.support.design.widget.TextInputLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.95"
+          android:layout_gravity="center"
+          android:paddingStart="4dp"
+          android:text="Display Icon in Pop-Up ?"/>
+
+        <CheckBox
+          android:id="@+id/display_pop_up_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.05"
+          android:layout_gravity="center"
+          android:paddingEnd="-1dp"
+          android:checked="true"/>
+
+      </LinearLayout>
+
+      <View
+        android:id="@+id/image_divider_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e0e0e0"/>
+
+      <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:src="@drawable/ic_add_image"/>
+
+      <View
+        android:id="@+id/image_divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e0e0e0"/>
+
+      <Button
+        android:id="@+id/define_geofence"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#686868"
+        android:drawableEnd="@drawable/ic_open_external"
+        android:drawableTint="@color/white"
+        android:text="DEFINE GEOFENCE"
+        style="@style/Widget.AppCompat.Button.Colored"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</layout>
