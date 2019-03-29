@@ -30,6 +30,7 @@ import com.ses.zebra.pssdemo_2019.Debugging.Logger;
 import com.ses.zebra.pssdemo_2019.EMDK.PSS;
 import com.ses.zebra.pssdemo_2019.MQTT;
 import com.ses.zebra.pssdemo_2019.POJOs.Config;
+import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
 import com.ses.zebra.pssdemo_2019.POJOs.Meta;
 import com.ses.zebra.pssdemo_2019.POJOs.StockItem;
 import com.ses.zebra.pssdemo_2019.R;
@@ -70,6 +71,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "meta.json";
     private static final String mStockFilePath = Environment.getExternalStorageDirectory()
             + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "stock.json";
+    private static final String mGeofenceFilePath = Environment.getExternalStorageDirectory()
+            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "geofence.json";
     private static final String SETTINGS = "Settings";
 
     // Variables
@@ -220,6 +223,15 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         // Start Imports
         try {
+            importGeofenceFile();
+        } catch(IOException e) {
+            // Log to File & LogCat
+            Logger.e(TAG, "Geofence File Import Error: " + e.getMessage(), e);
+            dataImported = false;
+        }
+
+        // Start Imports
+        try {
             importConfigFile();
         } catch(IOException e) {
             // Log to File & LogCat
@@ -302,6 +314,37 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         // Convert Byte[] to JSONObject
         App.mStockItems = mGson.fromJson(new String(buffer, "UTF-8"), StockItem[].class);
+
+        // Log to File & LogCat
+        Logger.i(TAG, "Parse Completed Successfully");
+    }
+
+    private void importGeofenceFile() throws IOException {
+        Logger.i(TAG, "Importing Geofence File...");
+
+        // Read stockFile from SDCard -> If not found copy from Assets Folder
+        File geofenceFile = new File(mGeofenceFilePath);
+        if (!geofenceFile.exists()) {
+            geofenceFile = createFileFromAsset(getAssets().open("geofence.json"), mGeofenceFilePath);
+        }
+
+        // Check if file exists or throw exception
+        if (geofenceFile == null || !geofenceFile.exists()) {
+            throw new FileNotFoundException("Could not find Geofence File: " + mGeofenceFilePath);
+        }
+
+        // Open & Read Json File
+        InputStream inputStream = new FileInputStream(geofenceFile);
+        byte[] buffer = new byte[inputStream.available()];
+        inputStream.read(buffer);
+        inputStream.close();
+
+        // Log to File && Logcat
+        Logger.i(TAG, "Importing Completed Successfully");
+        Logger.i(TAG, "Parsing Geofence File...");
+
+        // Convert Byte[] to JSONObject
+        App.mPopUpRegions = mGson.fromJson(new String(buffer, "UTF-8"), PopUpRegion[].class);
 
         // Log to File & LogCat
         Logger.i(TAG, "Parse Completed Successfully");
