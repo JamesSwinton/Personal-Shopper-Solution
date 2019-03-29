@@ -1,6 +1,7 @@
 package com.ses.zebra.pssdemo_2019.Activities.MainActivities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.philips.indoormaps.logic.MapFragment;
 import com.philips.indoormaps.map.Annotation;
 import com.philips.indoormaps.map.Location;
@@ -33,23 +34,25 @@ import com.philips.indoormaps.map.OnAnnotationTouchListener;
 import com.philips.indoormaps.map.OnMapReadyCallback;
 import com.philips.indoormaps.map.OnMapStatusChangedListener;
 import com.philips.indoormaps.map.OnMapTouchListener;
-
 import com.philips.indoormaps.map.PolyRegion;
 import com.philips.indoormaps.map.Region;
 import com.philips.indoormaps.map.RegionMonitor;
-
 import com.philips.indoormaps.map.UserLocationStatus;
 import com.philips.indoorpositioning.library.IndoorPositioning;
 import com.ses.zebra.pssdemo_2019.Activities.BaseActivity;
+import com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.GeofenceListActivity;
 import com.ses.zebra.pssdemo_2019.App;
 import com.ses.zebra.pssdemo_2019.Debugging.Logger;
 import com.ses.zebra.pssdemo_2019.Fragments.NoMapFragment;
 import com.ses.zebra.pssdemo_2019.Interfaces.WifiEnabledCallback;
+import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpData;
+import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
+import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.VertexPoint;
 import com.ses.zebra.pssdemo_2019.R;
 import com.ses.zebra.pssdemo_2019.databinding.ActivityVlcLightingBinding;
-
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class VlcLightingActivity extends BaseActivity {
@@ -60,6 +63,7 @@ public class VlcLightingActivity extends BaseActivity {
     // Constants
     private static final String MAP = "map.bin";
     private static final Handler mHandler = new Handler();
+    private static final SizeF mVertexAnnotationSize = new SizeF(0.25f, 0.25f);
     private static final String MAP_FILE_PATH = Environment.getExternalStorageDirectory()
             + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + MAP;
 
@@ -85,56 +89,9 @@ public class VlcLightingActivity extends BaseActivity {
 
     // Regions
     private MapFragment mapFragment;
+    private static int locationFound;
     private static AlertDialog discountDialog;
     private static RegionMonitor mRegionMonitor;
-    private static final List<Location> regionAnnotations = new ArrayList<>();
-
-    private static final int TOP_LEFT_REGION = 0;
-    private static final Location topLeftPolyRegionCenterPoint = new Location(App.mConfig.getTopLeftPolyRegionCenterPointLng(), App.mConfig.getTopLeftPolyRegionCenterPointLat(), 0);
-    private static final Location[] topLeftPolyRegion = {
-            new Location(App.mConfig.getTopLeftPolyRegionLng0(), App.mConfig.getTopLeftPolyRegionLat0(), 0),
-            new Location(App.mConfig.getTopLeftPolyRegionLng1(), App.mConfig.getTopLeftPolyRegionLat1(), 0),
-            new Location(App.mConfig.getTopLeftPolyRegionLng2(), App.mConfig.getTopLeftPolyRegionLat2(), 0),
-            new Location(App.mConfig.getTopLeftPolyRegionLng3(), App.mConfig.getTopLeftPolyRegionLat3(), 0)
-    };
-
-    private static final int MIDDLE_LEFT_REGION = 1;
-    private static final Location middleLeftPolyRegionCenterPoint = new Location(App.mConfig.getMiddleLeftPolyRegionCenterPointLng(), App.mConfig.getMiddleLeftPolyRegionCenterPointLat(), 0);
-    private static final Location[] middleLeftPolyRegion = {
-            new Location(App.mConfig.getMiddleLeftPolyRegionLng0(), App.mConfig.getMiddleLeftPolyRegionLat0(), 0),
-            new Location(App.mConfig.getMiddleLeftPolyRegionLng1(), App.mConfig.getMiddleLeftPolyRegionLat1(), 0),
-            new Location(App.mConfig.getMiddleLeftPolyRegionLng2(), App.mConfig.getMiddleLeftPolyRegionLat2(), 0),
-            new Location(App.mConfig.getMiddleLeftPolyRegionLng3(), App.mConfig.getMiddleLeftPolyRegionLat3(), 0)
-    };
-
-    private static final int TOP_RIGHT_REGION = 2;
-    private static final Location topRightPolyRegionCenterPoint = new Location(App.mConfig.getTopRightPolyRegionCenterPointLng(), App.mConfig.getTopRightPolyRegionCenterPointLat(), 0);
-    private static final Location[] topRightPolyRegion = {
-            new Location(App.mConfig.getTopRightPolyRegionLng0(), App.mConfig.getTopRightPolyRegionLat0(), 0),
-            new Location(App.mConfig.getTopRightPolyRegionLng1(), App.mConfig.getTopRightPolyRegionLat1(), 0),
-            new Location(App.mConfig.getTopRightPolyRegionLng2(), App.mConfig.getTopRightPolyRegionLat2(), 0),
-            new Location(App.mConfig.getTopRightPolyRegionLng3(), App.mConfig.getTopRightPolyRegionLat3(), 0)
-    };
-
-    private static final int MIDDLE_RIGHT_REGION = 3;
-    private static final Location middleRightPolyRegionCenterPoint = new Location(App.mConfig.getMiddleRightPolyRegionCenterPointLng(), App.mConfig.getMiddleRightPolyRegionCenterPointLat(), 0);
-    private static final Location[] middleRightPolyRegion = {
-            new Location(App.mConfig.getMiddleRightPolyRegionLng0(), App.mConfig.getMiddleRightPolyRegionLat0(), 0),
-            new Location(App.mConfig.getMiddleRightPolyRegionLng1(), App.mConfig.getMiddleRightPolyRegionLat1(), 0),
-            new Location(App.mConfig.getMiddleRightPolyRegionLng2(), App.mConfig.getMiddleRightPolyRegionLat2(), 0),
-            new Location(App.mConfig.getMiddleRightPolyRegionLng3(), App.mConfig.getMiddleRightPolyRegionLat3(), 0)
-    };
-
-    private static final int BOTTOM_REGION = 4;
-    private static final Location bottomPolyRegionCenterPoint = new Location(App.mConfig.getBottomPolyRegionCenterPointLng(), App.mConfig.getBottomPolyRegionCenterPointLat(), 0);
-    private static final Location[] bottomPolyRegion = {
-            new Location(App.mConfig.getBottomPolyRegionLng0(), App.mConfig.getBottomPolyRegionLat0(), 0),
-            new Location(App.mConfig.getBottomPolyRegionLng1(), App.mConfig.getBottomPolyRegionLat1(), 0),
-            new Location(App.mConfig.getBottomPolyRegionLng2(), App.mConfig.getBottomPolyRegionLat2(), 0),
-            new Location(App.mConfig.getBottomPolyRegionLng3(), App.mConfig.getBottomPolyRegionLat3(), 0)
-    };
-
-    private static int locationFound;
 
     @Override
     protected String getInheritedTag() {
@@ -190,39 +147,32 @@ public class VlcLightingActivity extends BaseActivity {
         mRegionMonitor.setTriggerTime(0.5f);
         mRegionMonitor.setRegionMonitorListener(regionMonitorListener());
 
-        // Add all Center Points to Array
-        regionAnnotations.add(bottomPolyRegionCenterPoint);
-        regionAnnotations.add(topLeftPolyRegionCenterPoint);
-        regionAnnotations.add(topRightPolyRegionCenterPoint);
-        regionAnnotations.add(middleLeftPolyRegionCenterPoint);
-        regionAnnotations.add(middleRightPolyRegionCenterPoint);
+        // Remove Regions
+        for (Annotation annotation : mIndoorMap.getAnnotations(0)) {
+            mIndoorMap.removeAnnotation(annotation);
+        }
 
-        // Add all Polygons to Array
-        List<Location[]> locationRegions = new ArrayList<>();
-        locationRegions.add(topLeftPolyRegion);
-        locationRegions.add(middleLeftPolyRegion);
-        locationRegions.add(topRightPolyRegion);
-        locationRegions.add(middleRightPolyRegion);
-        locationRegions.add(bottomPolyRegion);
+        // Get Discount Regions from Array
+        List<PopUpRegion> mPopUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
 
-        // Add regions to RegionMonitor
-        mRegionMonitor.addRegion(new PolyRegion(topLeftPolyRegion, 0, TOP_LEFT_REGION));
-        mRegionMonitor.addRegion(new PolyRegion(middleLeftPolyRegion, 0, MIDDLE_LEFT_REGION));
-        mRegionMonitor.addRegion(new PolyRegion(topRightPolyRegion, 0, TOP_RIGHT_REGION));
-        mRegionMonitor.addRegion(new PolyRegion(middleRightPolyRegion, 0, MIDDLE_RIGHT_REGION));
-        mRegionMonitor.addRegion(new PolyRegion(bottomPolyRegion, 0, BOTTOM_REGION));
-
-        // Draw Region over CenterPoint
-        for (Location location : regionAnnotations) {
-            mIndoorMap.addAnnotation(new Annotation(location, regionBitmap, false,
-                    new SizeF(1.0f, 1.0f), "Test"));
+        //
+        List<Location[]> regions = new ArrayList<>();
+        for (PopUpRegion popUpRegion : mPopUpRegions) {
+            Location[] region = new Location[4];
+            for (VertexPoint vertexPoint : popUpRegion.getGeoFenceData().getVertexPoints()) {
+                int index = popUpRegion.getGeoFenceData().getVertexPoints().indexOf(vertexPoint);
+                region[index] = new Location(vertexPoint.getLatitude(), vertexPoint.getLongitude(),
+                    popUpRegion.getGeoFenceData().getFloor());
+            }
+            mRegionMonitor.addRegion(new PolyRegion(region, 0, popUpRegion.getId()));
+            regions.add(region);
         }
 
         // Draw points at each Polygon point
-        for (Location[] locations : locationRegions) {
-            for (Location location : locations) {
+        for (Location[] region : regions) {
+            for (Location location : region) {
                 mIndoorMap.addAnnotation(new Annotation(location, annotationBitmap, false,
-                        new SizeF(0.1f, 0.1f), "Test"));
+                        mVertexAnnotationSize, "Test"));
             }
         }
     }
@@ -250,45 +200,50 @@ public class VlcLightingActivity extends BaseActivity {
         View discountDialogView = getLayoutInflater().inflate(R.layout.dialog_layout_region_discount, null);
         ImageView productImage = discountDialogView.findViewById(R.id.productImage);
         TextView discountText = discountDialogView.findViewById(R.id.discountText);
+        TextView discountTitle = discountDialogView.findViewById(R.id.discountTitle);
 
         // Customise View
-        switch (region.getId()) {
-            case TOP_LEFT_REGION:
-                productImage.setImageDrawable(getDrawable(R.drawable.discount_image_tositos));
-                discountText.setText("50% off!");
-                break;
-            case TOP_RIGHT_REGION:
-                productImage.setImageDrawable(getDrawable(R.drawable.discount_item_boogiedown));
-                discountText.setText("50% off!");
-                break;
-            case MIDDLE_LEFT_REGION:
-                productImage.setImageDrawable(getDrawable(R.drawable.discount_item_barqs));
-                discountText.setText("15% off!");
-                break;
-            case MIDDLE_RIGHT_REGION:
-                productImage.setImageDrawable(getDrawable(R.drawable.discount_item_redbull));
-                discountText.setText("20% off!");
-                break;
-            case BOTTOM_REGION:
-                productImage.setImageDrawable(getDrawable(R.drawable.discount_item_coconut));
-                discountText.setText("30% off!");
-                break;
+        for (PopUpRegion popUpRegion : App.mPopUpRegions) {
+            if (popUpRegion.getId() == region.getId()) {
+                PopUpData popUpData = popUpRegion.getPopUpData();
+
+                discountTitle.setText(popUpData.getTitle());
+
+                // Set Visibility
+                if (popUpData.getMessage() != null) {
+                    discountText.setVisibility(View.VISIBLE);
+                    discountText.setText(popUpData.getMessage());
+                } else {
+                    discountText.setVisibility(View.GONE);
+                }
+
+                //
+                if (popUpData.getImage() != null) {
+                    productImage.setVisibility(View.VISIBLE);
+                    productImage.setImageURI(Uri.fromFile(new File(popUpData.getImage())));
+                } else {
+                    productImage.setVisibility(View.GONE);
+                }
+
+                // Build Dialog
+                AlertDialog.Builder helpDialogBuilder = new AlertDialog.Builder(this)
+                    .setView(discountDialogView)
+                    .setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
+
+                // Create & Show Dialog
+                discountDialog = helpDialogBuilder.create();
+                discountDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+                discountDialog.show();
+                discountDialog.getWindow().getDecorView().setSystemUiVisibility(
+                    this.getWindow().getDecorView().getSystemUiVisibility());
+                discountDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+                // Dismiss Dialog automatically
+                mDataBinding.heading.postDelayed(
+                    () -> discountDialog.dismiss(), popUpData.getDisplayTimeSeconds() * 1000);
+            }
         }
-
-        // Build Dialog
-        AlertDialog.Builder helpDialogBuilder = new AlertDialog.Builder(this)
-                .setTitle("Discount Found!")
-                .setView(discountDialogView)
-                .setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
-
-        // Create & Show Dialog
-        discountDialog = helpDialogBuilder.create();
-        discountDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-        discountDialog.show();
-        discountDialog.getWindow().getDecorView().setSystemUiVisibility(
-                this.getWindow().getDecorView().getSystemUiVisibility());
-        discountDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
     @Override
