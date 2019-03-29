@@ -8,8 +8,8 @@ android {
         applicationId "com.ses.zebra.pssdemo_2019"
         minSdkVersion 22 // Support 22+ (MC18 = 22 (Lollipop) | PS20 = 28 (Oreo))
         targetSdkVersion 27
-        versionCode 2
-        versionName "2.0"
+        versionCode 3
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
