@@ -32,6 +32,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String PREF_WFC_ACTIVATION_CODE = "wfc_provisioning_code";
     private static final String PREF_ENABLE_VLC = "vlc_enabled";
     private static final String PREF_VLC_CONFIG_STRING = "vlc_config_string";
+    private static final String PREF_CONFIGURE_GEOFENCES = "configure_geofence";
     private static final String PREF_ENABLE_CONTEXTUAL_VOICE = "contextual_voice_enabled";
     private static final String PREF_AI_CONFIG_STRING = "contextual_voice_config_string";
 
@@ -54,12 +55,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set Preference Click Listeners
         findPreference(PREF_EDIT_STOCK_LIST).setOnPreferenceClickListener(preference -> false);
+        findPreference(PREF_CONFIGURE_GEOFENCES).setOnPreferenceClickListener(preference -> false);
     }
 
     private void initPreferences() {
         // Get Commonly Used Prefs
         mPrefCurrentTopic = findPreference(PREF_CURRENT_TOPIC);
         mPrefEditStockList = findPreference(PREF_EDIT_STOCK_LIST);
+
 
         // Add Preferences to List
         mPreferences.add(mPrefEditStockList);
@@ -76,6 +79,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mPreferences.add(findPreference(PREF_WFC_ACTIVATION_CODE));
         mPreferences.add(findPreference(PREF_ENABLE_VLC));
         mPreferences.add(findPreference(PREF_VLC_CONFIG_STRING));
+        mPreferences.add(findPreference(PREF_CONFIGURE_GEOFENCES));
         mPreferences.add(findPreference(PREF_ENABLE_CONTEXTUAL_VOICE));
         mPreferences.add(findPreference(PREF_AI_CONFIG_STRING));
 
@@ -145,5 +149,4 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 || preference.getKey().equals(PREF_VLC_CONFIG_STRING)
                 || preference.getKey().equals(PREF_AI_CONFIG_STRING);
     }
-
 }

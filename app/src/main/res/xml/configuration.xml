@@ -157,6 +157,17 @@
             android:singleLine="true">
         </EditTextPreference>
 
+        <Preference
+          android:key="configure_geofence"
+          android:title="Configure Geofences"
+          android:summary="Add or remove Geofences from the VLC Map">
+            <intent
+              android:action="android.intent.action.VIEW"
+              android:targetPackage="com.ses.zebra.pssdemo_2019"
+              android:targetClass="com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.GeofenceListActivity">
+            </intent>
+        </Preference>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Contextual Voice">
