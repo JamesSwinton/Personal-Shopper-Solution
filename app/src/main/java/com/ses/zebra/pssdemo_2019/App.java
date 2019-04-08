@@ -41,7 +41,7 @@ import java.util.List;
 public class App extends Application implements EMDKListener, StatusListener, DataListener {
 
     // Debugging
-    public static final boolean DEBUGGING = true;
+    public static final boolean DEBUGGING = false;
     private static final String TAG = "Application Class";
 
     // Constants
