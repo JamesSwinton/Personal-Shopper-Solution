@@ -105,7 +105,7 @@ public class GeofenceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   }
 
   public void refreshList() {
-    mPopUpRegions = App.mStockItems == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(App.mPopUpRegions));
+    mPopUpRegions = App.mPopUpRegions == null ? new ArrayList<>() : new ArrayList<>(Arrays.asList(App.mPopUpRegions));
     notifyDataSetChanged();
   }
 
