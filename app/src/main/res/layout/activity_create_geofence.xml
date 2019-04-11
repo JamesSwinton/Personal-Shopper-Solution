@@ -44,39 +44,17 @@
       android:layout_height="match_parent"
       android:orientation="vertical">
 
-      <LinearLayout
+      <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
+        android:layout_height="wrap_content">
+        <EditText
+          android:id="@+id/region_size"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_weight="0.5">
-          <EditText
-            android:id="@+id/region_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Size (Meters)"
-            android:inputType="numberDecimal"
-            android:text="5"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.5">
-          <EditText
-            android:id="@+id/region_angle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Angle"
-            android:inputType="numberDecimal"
-            android:text="50.9999"/>
-        </android.support.design.widget.TextInputLayout>
-
-      </LinearLayout>
+          android:hint="Size"
+          android:inputType="numberDecimal"
+          android:text="20"/>
+      </android.support.design.widget.TextInputLayout>
       
       <RelativeLayout
         android:layout_width="match_parent"
