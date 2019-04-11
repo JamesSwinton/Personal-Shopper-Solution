@@ -61,8 +61,7 @@ public class GeofenceSettingsActivity extends BaseActivity {
     mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_geofence_settings);
 
     // Init Back Listener
-    mDataBinding.headerIcon.setOnClickListener(view ->
-        NavUtils.navigateUpFromSameTask(this));
+    mDataBinding.headerIcon.setOnClickListener(view -> confirmBackNavigation());
 
     // Init Switch Listener for Check boxes (Optional message / icon)
     initDisplayOptionsListener();
@@ -91,6 +90,25 @@ public class GeofenceSettingsActivity extends BaseActivity {
       mDataBinding.defineGeofence.setText("DEFINE GEOFENCE");
       mDataBinding.defineGeofence.setBackgroundColor(getResources().getColor(R.color.zebraRed));
     }
+  }
+
+  private void confirmBackNavigation() {
+    AlertDialog.Builder confirmExitDialogBuilder = new AlertDialog.Builder(this)
+        .setTitle("Confirm Exit")
+        .setMessage("You are about to leave this page. All unsaved changes will be lost - " +
+            "Are you sure you want to exit?")
+        .setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
+        .setPositiveButton("EXIT", (dialogInterface, i) ->
+            NavUtils.navigateUpFromSameTask(this));
+
+    // Create & Show Dialog
+    AlertDialog confirmExitDialog = confirmExitDialogBuilder.create();
+    confirmExitDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    confirmExitDialog.show();
+    confirmExitDialog.getWindow().getDecorView().setSystemUiVisibility(
+        this.getWindow().getDecorView().getSystemUiVisibility());
+    confirmExitDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
   }
 
   private void initDisplayOptionsListener() {

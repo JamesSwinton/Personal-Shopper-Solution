@@ -88,8 +88,7 @@ public class CreateGeofenceActivity extends BaseActivity {
     mGeofenceData = new GeofenceData();
     mRegionBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.region);
     mAnnotationBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_annotation);
-    mDataBinding.headerIcon.setOnClickListener(view ->
-        NavUtils.navigateUpFromSameTask(this));
+    mDataBinding.headerIcon.setOnClickListener(view -> confirmBackNavigation());
 
     // Init Save Listener
     mDataBinding.saveButton.setOnClickListener(view -> returnGeofenceObjectAndExit());
@@ -123,6 +122,25 @@ public class CreateGeofenceActivity extends BaseActivity {
       }
       mIndoorPositioning.unregister();
     }
+  }
+
+  private void confirmBackNavigation() {
+    AlertDialog.Builder confirmExitDialogBuilder = new AlertDialog.Builder(this)
+        .setTitle("Confirm Exit")
+        .setMessage("You are about to leave this page. All unsaved changes will be lost - " +
+            "Are you sure you want to exit?")
+        .setNegativeButton("CANCEL", (dialogInterface, i) -> dialogInterface.dismiss())
+        .setPositiveButton("EXIT", (dialogInterface, i) ->
+            NavUtils.navigateUpFromSameTask(this));
+
+    // Create & Show Dialog
+    AlertDialog confirmExitDialog = confirmExitDialogBuilder.create();
+    confirmExitDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    confirmExitDialog.show();
+    confirmExitDialog.getWindow().getDecorView().setSystemUiVisibility(
+        this.getWindow().getDecorView().getSystemUiVisibility());
+    confirmExitDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
   }
 
   private void initialiseIndoorPositioning() {
@@ -212,16 +230,6 @@ public class CreateGeofenceActivity extends BaseActivity {
       Log.i(TAG, "onMapAnnotationTouchListener: Map Touched - Longitude: " +
           location.getLongitude() + " | Latitude: " + location.getLatitude() +
           " | Level: " + location.getFloorLevel());
-
-      if (TextUtils.isEmpty(mDataBinding.regionAngle.getText())) {
-        mDataBinding.regionAngle.setError("Please enter an Angle");
-        return;
-      }
-
-      if (TextUtils.isEmpty(mDataBinding.regionSize.getText())) {
-        mDataBinding.regionAngle.setError("Please enter an Size");
-        return;
-      }
 
       // Remove Existing Geofence Annotation
       for (Annotation annotation : mIndoorMap.getAnnotations(0)) {
