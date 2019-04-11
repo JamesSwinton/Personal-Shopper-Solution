@@ -1,9 +1,5 @@
 package com.ses.zebra.pssdemo_2019.Activities.SettingsActivities;
 
-import static com.ses.zebra.pssdemo_2019.Activities.BaseActivity.PREF_VLC_CONFIG_STRING;
-import static com.ses.zebra.pssdemo_2019.Activities.BaseActivity.mSharedPreferences;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -16,7 +12,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -44,14 +39,8 @@ import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.GeofenceData;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.VertexPoint;
 import com.ses.zebra.pssdemo_2019.R;
 import com.ses.zebra.pssdemo_2019.Utilities.GeofenceHelper;
-import com.ses.zebra.pssdemo_2019.Utilities.UriHelper;
 import com.ses.zebra.pssdemo_2019.databinding.ActivityCreateGeofenceBinding;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +52,7 @@ public class CreateGeofenceActivity extends BaseActivity {
   // Constants
   private static final Handler mHandler = new Handler();
 
-  private static final SizeF mAnnotationBitmapSize = new SizeF(0.25f, 0.25f);
+  private static final SizeF mAnnotationBitmapSize = new SizeF(0.01f, 0.01f);
 
   private static final String GEOFENCE_DATA = "geofence-data";
   private static final String MAP_FILE_PATH = Environment.getExternalStorageDirectory()
@@ -240,16 +229,17 @@ public class CreateGeofenceActivity extends BaseActivity {
       }
 
       // Get & Set Geofence Data
-      mGeofenceData = GeofenceHelper.getGeofenceData(location.getLatitude(), location.getLongitude(),
-          Double.parseDouble(mDataBinding.regionSize.getText().toString()),
-          Double.parseDouble(mDataBinding.regionAngle.getText().toString()),
-          location.getFloorLevel());
+      mGeofenceData = GeofenceHelper.createCircularGeofence(
+          location.getLatitude(),
+          location.getLongitude(),
+          Double.parseDouble(mDataBinding.regionSize.getText().toString())
+      );
 
       // Create Annotations
       List<Annotation> vertexAnnotations = new ArrayList<>();
       for (VertexPoint vertexPoint : mGeofenceData.getVertexPoints()) {
         // Create Location from Vertex
-        Location vertexLocation = new Location(vertexPoint.getLatitude(), vertexPoint.getLongitude(),
+        Location vertexLocation = new Location(vertexPoint.getLongitude(), vertexPoint.getLatitude(),
             location.getFloorLevel());
         // Create Annotation & Add to List
         vertexAnnotations.add(new Annotation(vertexLocation, mAnnotationBitmap, false,
@@ -280,7 +270,7 @@ public class CreateGeofenceActivity extends BaseActivity {
       return false;
     }
 
-    if (mGeofenceData.getVertexPoints().size() != 4) {
+    if (mGeofenceData.getVertexPoints().size() != 360) {
       return false;
     }
 

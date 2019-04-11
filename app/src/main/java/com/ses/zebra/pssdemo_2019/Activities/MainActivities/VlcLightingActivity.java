@@ -39,6 +39,7 @@ import com.philips.indoormaps.map.Region;
 import com.philips.indoormaps.map.RegionMonitor;
 import com.philips.indoormaps.map.UserLocationStatus;
 import com.philips.indoorpositioning.library.IndoorPositioning;
+import com.philips.indoorpositioning.library.IndoorPositioning.Listener;
 import com.ses.zebra.pssdemo_2019.Activities.BaseActivity;
 import com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.GeofenceListActivity;
 import com.ses.zebra.pssdemo_2019.App;
@@ -63,7 +64,7 @@ public class VlcLightingActivity extends BaseActivity {
     // Constants
     private static final String MAP = "map.bin";
     private static final Handler mHandler = new Handler();
-    private static final SizeF mVertexAnnotationSize = new SizeF(0.25f, 0.25f);
+    private static final SizeF mVertexAnnotationSize = new SizeF(0.01f, 0.01f);
     private static final String MAP_FILE_PATH = Environment.getExternalStorageDirectory()
             + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + MAP;
 
@@ -158,11 +159,10 @@ public class VlcLightingActivity extends BaseActivity {
         //
         List<Location[]> regions = new ArrayList<>();
         for (PopUpRegion popUpRegion : mPopUpRegions) {
-            Location[] region = new Location[4];
+            Location[] region = new Location[360];
             for (VertexPoint vertexPoint : popUpRegion.getGeoFenceData().getVertexPoints()) {
                 int index = popUpRegion.getGeoFenceData().getVertexPoints().indexOf(vertexPoint);
-                region[index] = new Location(vertexPoint.getLatitude(), vertexPoint.getLongitude(),
-                    popUpRegion.getGeoFenceData().getFloor());
+                region[index] = new Location(vertexPoint.getLongitude(), vertexPoint.getLatitude(), popUpRegion.getGeoFenceData().getFloor());
             }
             mRegionMonitor.addRegion(new PolyRegion(region, 0, popUpRegion.getId()));
             regions.add(region);
@@ -249,24 +249,27 @@ public class VlcLightingActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Register Indoor Positioning Listener
+        // Perform Null Check on IndoorPositioning Object
         if (mIndoorPositioning != null) {
-            mIndoorPositioning.register(indoorPositioningListener, mHandler);
+          // Register for Location Callbacks (Passing interface and handler as parameters)
+          mIndoorPositioning.register(indoorPositioningListener, mHandler);
 
-            // Start Indoor Positioning
-            mIndoorPositioning.start();
+          // Start Indoor Positioning
+          mIndoorPositioning.start();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Stop Indoor Position & Unregister Listener
+        // Perform Null Check on IndoorPositioning Object
         if (mIndoorPositioning != null) {
-            if (mIndoorPositioning.isRunning()) {
-                mIndoorPositioning.stop();
-            }
-            mIndoorPositioning.unregister();
+          // Stop Locationing if it's running
+          if (mIndoorPositioning.isRunning()) {
+              mIndoorPositioning.stop();
+          }
+          // Unregister from Location Callbacks
+          mIndoorPositioning.unregister();
         }
     }
 
@@ -363,7 +366,6 @@ public class VlcLightingActivity extends BaseActivity {
     /*
      Locationing Methods
      */
-
     private IndoorPositioning.Listener indoorPositioningListener = new IndoorPositioning.Listener() {
         @Override
         public void didUpdateHeading(java.util.Map<String, Object> heading) {

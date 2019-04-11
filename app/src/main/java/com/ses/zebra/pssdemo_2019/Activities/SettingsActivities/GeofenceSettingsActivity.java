@@ -84,7 +84,7 @@ public class GeofenceSettingsActivity extends BaseActivity {
   protected void onResume() {
     super.onResume();
 
-    if (mPopUpRegion.getGeoFenceData() != null && mPopUpRegion.getGeoFenceData().getVertexPoints().size() == 4) {
+    if (mPopUpRegion.getGeoFenceData() != null && mPopUpRegion.getGeoFenceData().getVertexPoints().size() == 360) {
       mDataBinding.defineGeofence.setText("RE-DEFINE GEOFENCE");
       mDataBinding.defineGeofence.setBackgroundColor(getResources().getColor(R.color.zebraGreen));
     } else {
@@ -203,7 +203,7 @@ public class GeofenceSettingsActivity extends BaseActivity {
     if (mPopUpRegion.getGeoFenceData() == null ||
         mPopUpRegion.getGeoFenceData().getCenterPoint() == null ||
         mPopUpRegion.getGeoFenceData().getVertexPoints() == null ||
-        mPopUpRegion.getGeoFenceData().getVertexPoints().size() != 4) {
+        mPopUpRegion.getGeoFenceData().getVertexPoints().size() != 360) {
       showDialog("Error!", "Please make sure you've created a geo-fence.", false);
       return false;
     }
