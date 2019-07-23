@@ -3,13 +3,13 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.ses.zebra.pssdemo_2019"
         minSdkVersion 22 // Support 22+ (MC18 = 22 (Lollipop) | PS20 = 28 (Oreo))
-        targetSdkVersion 27
-        versionCode 3
-        versionName "3.0"
+        targetSdkVersion 28
+        versionCode 7
+        versionName "3.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
@@ -33,21 +33,17 @@ android {
 }
 
 dependencies {
-    // compileOnly fileTree(include: ['com.symbol.emdk.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    // Zebra Libraries
-    // implementation 'com.symbol:emdk:7.0.0'
-
     // Preference Support Library FIX
     implementation 'com.takisoft.fix:preference-v7:27.1.1.1'
     // Support Libraries
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     // Google Libraries
     implementation 'com.google.code.gson:gson:2.8.0'
