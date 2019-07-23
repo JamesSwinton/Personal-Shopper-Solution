@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
@@ -73,7 +74,7 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     private static final Handler mHandler = new Handler();
     private static final SizeF mVertexAnnotationSize = new SizeF(0.01f, 0.01f);
     private static final String MAP_FILE_PATH = Environment.getExternalStorageDirectory()
-            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + MAP;
+        + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + MAP;
 
     // Variables
     private ActivityVlcLightingBinding mDataBinding;
@@ -274,16 +275,16 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     protected void onResume() {
         super.onResume();
 
-      // Enable Scanner
-      mDataBinding.heading.postDelayed(this::enableScanner, 100);
+        // Enable Scanner
+        mDataBinding.heading.postDelayed(this::enableScanner, 100);
 
         // Perform Null Check on IndoorPositioning Object
         if (mIndoorPositioning != null) {
-          // Register for Location Callbacks (Passing interface and handler as parameters)
-          mIndoorPositioning.register(indoorPositioningListener, mHandler);
+            // Register for Location Callbacks (Passing interface and handler as parameters)
+            mIndoorPositioning.register(indoorPositioningListener, mHandler);
 
-          // Start Indoor Positioning
-          mIndoorPositioning.start();
+            // Start Indoor Positioning
+            mIndoorPositioning.start();
         }
     }
 
@@ -292,34 +293,47 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         super.onPause();
         // Perform Null Check on IndoorPositioning Object
         if (mIndoorPositioning != null) {
-          // Stop Locationing if it's running
-          if (mIndoorPositioning.isRunning()) {
-              mIndoorPositioning.stop();
-          }
-          // Unregister from Location Callbacks
-          mIndoorPositioning.unregister();
+            // Stop Locationing if it's running
+            if (mIndoorPositioning.isRunning()) {
+                mIndoorPositioning.stop();
+            }
+            // Unregister from Location Callbacks
+            mIndoorPositioning.unregister();
         }
 
-      // Disable Scanner
-      disableScanner();
+        // Disable Scanner
+        disableScanner();
     }
 
-  private void enableScanner() {
-    final Scanner.DataListener dataListener = this;
-    try {
-      ((App) getApplicationContext()).enableScanner(dataListener);
-    } catch (ScannerException e) {
-      Log.e(TAG, "ScannerException: " + e.getMessage());
+    private void enableScanner() {
+        final Scanner.DataListener dataListener = this;
+        try {
+            ((App) getApplicationContext()).enableScanner(dataListener);
+        } catch (ScannerException e) {
+            Log.e(TAG, "ScannerException: " + e.getMessage());
+        }
     }
-  }
 
-  private void disableScanner() {
-    try {
-      ((App) getApplicationContext()).disableScanner(this);
-    } catch (ScannerException e) {
-      Log.e(TAG, "ScannerException: " + e.getMessage());
+    private void disableScanner() {
+        try {
+            ((App) getApplicationContext()).disableScanner(this);
+        } catch (ScannerException e) {
+            Log.e(TAG, "ScannerException: " + e.getMessage());
+        }
     }
-  }
+
+  /*
+   Speech Methods
+   */
+
+    private void startSpeechRecognition() {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     /*
      Map Methods
@@ -340,11 +354,11 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
             // Notify
             Logger.i(TAG, "Error loading Map File");
             Toast.makeText(VlcLightingActivity.this, "Could not load Map File",
-                    Toast.LENGTH_LONG).show();
+                Toast.LENGTH_LONG).show();
             // Replace fragment with Error Fragment
             getSupportFragmentManager()
-                    .beginTransaction().replace(R.id.map_container, NoMapFragment.newInstance())
-                    .commit();
+                .beginTransaction().replace(R.id.map_container, NoMapFragment.newInstance())
+                .commit();
             return;
         }
 
@@ -353,8 +367,8 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
 
         // Show Map Fragment
         getSupportFragmentManager()
-                .beginTransaction().replace(R.id.map_container, mapFragment)
-                .commit();
+            .beginTransaction().replace(R.id.map_container, mapFragment)
+            .commit();
     }
 
     private OnMapReadyCallback onMapReadyCallback() {
@@ -365,7 +379,7 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
             mIndoorMap.setOnMapStatusChangedListener(onMapStatusChangedListener());
             mIndoorMap.setOnAnnotationTouchListener(onMapAnnotationTouchListener());
             mIndoorMap.setStyle("{\"userLocationColor\":\"#007CB0\", \"routeLineColor\":\"#007CB0\", " +
-                    "\"floorSelectionColor\":\"#007CB0\"}");
+                "\"floorSelectionColor\":\"#007CB0\"}");
 
             // Init Discount Regions
             initDiscountRegions();
@@ -387,8 +401,8 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         return location -> {
             // Log Map Touch
             Log.i(TAG, "Map Touch Detected - Longitude: " + location.getLongitude()
-                    + " | Latitude: " + location.getLatitude()
-                    + " | Level: " + location.getFloorLevel());
+                + " | Latitude: " + location.getLatitude()
+                + " | Level: " + location.getFloorLevel());
 
             // Debugging
             if (App.DEBUGGING) {
@@ -421,7 +435,7 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
             mHeadingDegrees = (Float) heading.get(IndoorPositioning.Listener.HEADING_DEGREES);
             mHeadingAccuracy = (Float) heading.get(IndoorPositioning.Listener.HEADING_ACCURACY);
             mHeadingArbitraryNorthDegrees = (Float) heading.get(
-                    IndoorPositioning.Listener.HEADING_ARBITRARY_NORTH_DEGREES);
+                IndoorPositioning.Listener.HEADING_ARBITRARY_NORTH_DEGREES);
 
             // Update Heading Value
             mDataBinding.heading.setText("Heading: \n" + String.format("%.1f", mHeadingDegrees));
@@ -441,11 +455,11 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
 
             // Get Accuracy Values
             mHorizontalAccuracy = (Float) location.get(
-                    IndoorPositioning.Listener.LOCATION_HORIZONTAL_ACCURACY);
+                IndoorPositioning.Listener.LOCATION_HORIZONTAL_ACCURACY);
             mAltitudeAccuracy = (Float) location.get(
-                    IndoorPositioning.Listener.LOCATION_VERTICAL_ACCURACY);
+                IndoorPositioning.Listener.LOCATION_VERTICAL_ACCURACY);
             mExpectedAccuracyLevel = ExpectedAccuracyLevel.fromInteger((Integer)
-                    location.get(IndoorPositioning.Listener.LOCATION_EXPECTED_ACCURACY_LEVEL));
+                location.get(IndoorPositioning.Listener.LOCATION_EXPECTED_ACCURACY_LEVEL));
 
             // Set Values to UI
             mDataBinding.latitude.setText("Latitude: \n" + String.valueOf(mLatitude));
@@ -453,8 +467,8 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
 
             if (locationFound < 50) {
                 Logger.i(TAG, "Location Update - Longitude: " + mLongitude
-                        + " | Latitude: " + mLatitude
-                        + " | Accuracy: " + mHorizontalAccuracy);
+                    + " | Latitude: " + mLatitude
+                    + " | Accuracy: " + mHorizontalAccuracy);
 
                 locationFound++;
             }
@@ -470,7 +484,7 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         public void didFailWithError(Error error) {
             // Log Error
             Logger.e(TAG, "VLC Location Error: " + error.toString(),
-                    new Exception(error.toString()));
+                new Exception(error.toString()));
 
             // Check for Connection Failed due to WiFi
             if (error.equals(Error.CONNECTION_FAILED)) {
@@ -480,8 +494,8 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
 
             // Show Error Dialog
             showDialog("Locationing Error!",
-                    "VLC Locationing encountered an error: \n\n" + error.toString(),
-                    false);
+                "VLC Locationing encountered an error: \n\n" + error.toString(),
+                false);
         }
     };
 
@@ -490,47 +504,47 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         if (!wifiEnabled()) {
             // WiFi not enabled -> Show Dialog with option to enable & re-try
             AlertDialog.Builder locationErrorDialogBuilder = new AlertDialog.Builder(VlcLightingActivity.this)
-                    .setTitle("Locationing Error!")
-                    .setIcon(R.drawable.ic_error)
-                    .setMessage("VLC Connection Failed due to WiFi being disabled.")
-                    .setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss())
-                    .setPositiveButton("ENABLE & RETRY", (dialogInterface, i) -> {
-                        enableWifi(new WifiEnabledCallback() {
-                            @Override
-                            public void onConnected() {
-                                // Restart Positioning
-                                restartPositioning();
-                                // Display Result (Success / Failure)
-                                if (mIndoorPositioning != null && mIndoorPositioning.isRunning()) {
-                                    // Display dialog
-                                    showDialog("Locationing Enabled!",
-                                            "You have connected to the Locationing Service!",
-                                            true);
-                                }
+                .setTitle("Locationing Error!")
+                .setIcon(R.drawable.ic_error)
+                .setMessage("VLC Connection Failed due to WiFi being disabled.")
+                .setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("ENABLE & RETRY", (dialogInterface, i) -> {
+                    enableWifi(new WifiEnabledCallback() {
+                        @Override
+                        public void onConnected() {
+                            // Restart Positioning
+                            restartPositioning();
+                            // Display Result (Success / Failure)
+                            if (mIndoorPositioning != null && mIndoorPositioning.isRunning()) {
+                                // Display dialog
+                                showDialog("Locationing Enabled!",
+                                    "You have connected to the Locationing Service!",
+                                    true);
                             }
+                        }
 
-                            @Override
-                            public void onConnectionFailed() {
-                                // Show Error Dialog
-                                showDialog("Locationing Error!",
-                                        "VLC Connection failed as you are not connected to a " +
-                                                "valid network. Please manually connect to a valid " +
-                                                "Wifi network and try again.", false);
-                            }
+                        @Override
+                        public void onConnectionFailed() {
+                            // Show Error Dialog
+                            showDialog("Locationing Error!",
+                                "VLC Connection failed as you are not connected to a " +
+                                    "valid network. Please manually connect to a valid " +
+                                    "Wifi network and try again.", false);
+                        }
 
-                            @Override
-                            public void onEnableFailed() {
-                                // Show Error Dialog
-                                showDialog("Locationing Error!",
-                                        "There was an error whilst attempting to enable " +
-                                                "WiFi, please manually enable WiFi and try again.",
-                                        false);
-                            }
-                        });
-
-                        // Dismiss this Dialog
-                        dialogInterface.dismiss();
+                        @Override
+                        public void onEnableFailed() {
+                            // Show Error Dialog
+                            showDialog("Locationing Error!",
+                                "There was an error whilst attempting to enable " +
+                                    "WiFi, please manually enable WiFi and try again.",
+                                false);
+                        }
                     });
+
+                    // Dismiss this Dialog
+                    dialogInterface.dismiss();
+                });
 
             // Show Dialog without showing navigation
             displayDialogImmersive(locationErrorDialogBuilder);
@@ -541,22 +555,22 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         if (!wifiConnected()) {
             // Show Dialog
             showDialog("Locationing Error!",
-                    "VLC Connection failed as you are not connected to a valid network. " +
-                            "Please manually connect to a valid Wifi network and try again.",
-                    false);
+                "VLC Connection failed as you are not connected to a valid network. " +
+                    "Please manually connect to a valid Wifi network and try again.",
+                false);
             return;
         }
 
         // WiFi is valid, show generic connection failed
         showDialog("Locationing Error!",
-                "VLC Locationing encountered an error: \n\n CONNECTION_FAILED",
-                false);
+            "VLC Locationing encountered an error: \n\n CONNECTION_FAILED",
+            false);
     }
 
     private boolean wifiEnabled() {
         if (mWifiManager == null) {
             mWifiManager = (WifiManager) getApplicationContext().
-                    getSystemService(Context.WIFI_SERVICE);
+                getSystemService(Context.WIFI_SERVICE);
         }
         return mWifiManager.isWifiEnabled();
     }
@@ -565,7 +579,7 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         // Init Connectivity Manager
         if (mConnectivityManager == null) {
             mConnectivityManager = (ConnectivityManager)
-                    getSystemService(CONNECTIVITY_SERVICE);
+                getSystemService(CONNECTIVITY_SERVICE);
         }
         // Get Network Info
         NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
@@ -576,27 +590,27 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     private void enableWifi(WifiEnabledCallback callback) {
         // Build Progress Dialog View
         View wifiProgressDialog = getLayoutInflater().inflate(
-                R.layout.dialog_layout_enable_wifi_progress, null);
+            R.layout.dialog_layout_enable_wifi_progress, null);
 
         // Build Dialog
         AlertDialog.Builder wifiProgressDialogBuilder = new AlertDialog.Builder(this)
-                .setTitle("WiFi Assistant")
-                .setView(wifiProgressDialog)
-                .setCancelable(false);
+            .setTitle("WiFi Assistant")
+            .setView(wifiProgressDialog)
+            .setCancelable(false);
 
         // Create & Show Dialog
         AlertDialog wifiDialog = wifiProgressDialogBuilder.create();
         wifiDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         wifiDialog.show();
         wifiDialog.getWindow().getDecorView().setSystemUiVisibility(
-                this.getWindow().getDecorView().getSystemUiVisibility());
+            this.getWindow().getDecorView().getSystemUiVisibility());
         wifiDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
 
         // Get WifiManager
         if (mWifiManager == null) {
             mWifiManager = (WifiManager) getApplicationContext().
-                    getSystemService(Context.WIFI_SERVICE);
+                getSystemService(Context.WIFI_SERVICE);
         }
 
         // Enabled Wifi
@@ -671,10 +685,10 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     private void showDialog(String title, String message, boolean success) {
         // Build Dialog
         AlertDialog.Builder genericDialogBuilder = new AlertDialog.Builder(VlcLightingActivity.this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("OK", null)
-                .setIcon(success ? R.drawable.ic_success : R.drawable.ic_error);
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .setIcon(success ? R.drawable.ic_success : R.drawable.ic_error);
 
         // Show Dialog without showing navigation
         displayDialogImmersive(genericDialogBuilder);
@@ -683,10 +697,10 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     private void displayDialogImmersive(AlertDialog.Builder builder) {
         AlertDialog genericDialog = builder.create();
         genericDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         genericDialog.show();
         genericDialog.getWindow().getDecorView().setSystemUiVisibility(
-                VlcLightingActivity.this.getWindow().getDecorView().getSystemUiVisibility());
+            VlcLightingActivity.this.getWindow().getDecorView().getSystemUiVisibility());
         genericDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
@@ -700,11 +714,11 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
 
         // Init Listeners
         mDataBinding.bottomNavLayout.basketLayout.setOnClickListener(view ->
-                displayActivity(BasketActivity.class));
+            displayActivity(BasketActivity.class));
         mDataBinding.bottomNavLayout.shoppingListLayout.setOnClickListener(view ->
-                displayActivity(ShoppingListActivity.class));
+            displayActivity(ShoppingListActivity.class));
         mDataBinding.bottomNavLayout.offersLayout.setOnClickListener(view ->
-                displayActivity(OffersListActivity.class));
+            displayActivity(OffersListActivity.class));
     }
 
     private void setCurrentTab() {
@@ -712,63 +726,63 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         for (Drawable drawable : mDataBinding.bottomNavLayout.vlcText.getCompoundDrawables()) {
             if (drawable != null) {
                 drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(
-                        mDataBinding.bottomNavLayout.vlcText.getContext(), R.color.white),
-                        PorterDuff.Mode.SRC_IN));
+                    mDataBinding.bottomNavLayout.vlcText.getContext(), R.color.white),
+                    PorterDuff.Mode.SRC_IN));
             }
         }
 
         // Update Background Colour
         mDataBinding.bottomNavLayout.vlcLayout.setBackgroundColor(
-                getResources().getColor(R.color.zebraBlue));
+            getResources().getColor(R.color.zebraBlue));
 
         // Update Text Colour
         mDataBinding.bottomNavLayout.vlcText.setTextColor(Color.WHITE);
     }
 
-  @Override
-  public void onData(ScanDataCollection scanDataCollection) {
-    // Get Scanner Data as []
-    ScanDataCollection.ScanData[] scannedData = scanDataCollection.getScanData().toArray(
-        new ScanDataCollection.ScanData[0]);
+    @Override
+    public void onData(ScanDataCollection scanDataCollection) {
+        // Get Scanner Data as []
+        ScanDataCollection.ScanData[] scannedData = scanDataCollection.getScanData().toArray(
+            new ScanDataCollection.ScanData[0]);
 
-    // If not End shop -> Parse Barcode
-    new VlcLightingActivity.getBarcode(this).execute(scannedData);
-  }
-
-  public static class getBarcode extends AsyncTask<ScanData, Void, String> {
-
-    private WeakReference<VlcLightingActivity> activityWeakReference;
-
-    getBarcode(VlcLightingActivity activity) {
-      this.activityWeakReference = new WeakReference<>(activity);
+        // If not End shop -> Parse Barcode
+        new VlcLightingActivity.getBarcode(this).execute(scannedData);
     }
 
-    @Override
-    protected String doInBackground(ScanDataCollection.ScanData... scanDataArray) {
-      return scanDataArray[0].getData();
-    }
+    public static class getBarcode extends AsyncTask<ScanData, Void, String> {
 
-    @Override
-    protected void onPostExecute(String barcode) {
-      // Get context
-      VlcLightingActivity activityContext = activityWeakReference.get();
-      if (activityContext == null || activityContext.isFinishing()) return;
+        private WeakReference<VlcLightingActivity> activityWeakReference;
 
-      // Start Routing
-      List<PopUpRegion> popUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
-      for (PopUpRegion popUpRegion : popUpRegions) {
-        if (popUpRegion.getPopUpData().getBarcode().equalsIgnoreCase(barcode)) {
-          mRegionBarcode = barcode;
-          // Start Routing
-          if (mIndoorMap != null) {
-            Location location = new Location(
-                popUpRegion.getGeoFenceData().getCenterPoint().getLongitude(),
-                popUpRegion.getGeoFenceData().getCenterPoint().getLatitude(),
-                0);
-            mIndoorMap.navigateToLocation(location);
-          }
+        getBarcode(VlcLightingActivity activity) {
+            this.activityWeakReference = new WeakReference<>(activity);
         }
-      }
+
+        @Override
+        protected String doInBackground(ScanDataCollection.ScanData... scanDataArray) {
+            return scanDataArray[0].getData();
+        }
+
+        @Override
+        protected void onPostExecute(String barcode) {
+            // Get context
+            VlcLightingActivity activityContext = activityWeakReference.get();
+            if (activityContext == null || activityContext.isFinishing()) return;
+
+            // Start Routing
+            List<PopUpRegion> popUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
+            for (PopUpRegion popUpRegion : popUpRegions) {
+                if (popUpRegion.getPopUpData().getBarcode().equalsIgnoreCase(barcode)) {
+                    mRegionBarcode = barcode;
+                    // Start Routing
+                    if (mIndoorMap != null) {
+                        Location location = new Location(
+                            popUpRegion.getGeoFenceData().getCenterPoint().getLongitude(),
+                            popUpRegion.getGeoFenceData().getCenterPoint().getLatitude(),
+                            0);
+                        mIndoorMap.navigateToLocation(location);
+                    }
+                }
+            }
+        }
     }
-  }
 }
