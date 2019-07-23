@@ -67,76 +67,6 @@ public class App extends Application implements EMDKListener, StatusListener, Da
     private List<DataListener> mDataListeners;
     private static BarcodeManager mBarcodeManager;
 
-    public static String[] mIngredientsList = {
-            "Carbonated Water",
-            "Citric Acid",
-            "Erythritol",
-            "Sodium Citrate",
-            "Taurine",
-            "Panax Ginseng Extract",
-            "L-Carnitine",
-            "L-Tartrate",
-            "Sucralose",
-            "Sobric Acid",
-            "Benzoic Acid",
-            "Salt",
-            "Guarana Extract",
-            "Glucuronolactone",
-            "Caffeine",
-            "Acesulfame K",
-            "Aspartame",
-            "Inositol",
-            "Xanthan Gum",
-            "Niacinamide",
-            "Calcium Pantothenate",
-            "Pyridoxine HCL",
-            "Vitamin B12",
-            "Natural & Artificial Flavors",
-            "Colors",
-            "Vegetable Oil (Corn, Canola, Sunflower and/or Soybean Oil)",
-            "Sugar",
-            "Monosodium Glutamine",
-            "Fructose",
-            "Sodium Diacetate",
-            "Soy Sauce (Soybean, Wheat, Salt)",
-            "Onion Powder",
-            "Maltodextrin (Made from corn)",
-            "Hydrolyzed Soy Protein",
-            "Garlic Powder",
-            "Torula Yeast",
-            "Malic Acid",
-            "Extract of Paprike",
-            "Spices",
-            "Caramel Color",
-            "Disodium Inosinate",
-            "Disodium Guanylate",
-            "Dextrose",
-            "Natural Flavor",
-            "Corn Meal",
-            "Vegetable Oil (Contains One or More of the Following: Corn, Cottonseed, Sunflower, or Canola Oil)",
-            "Whey",
-            "Cornstarch",
-            "Corn Flour",
-            "Calcium Carbonate",
-            "Buttermilk",
-            "Cheddar Cheese (Cultured Milk, Salt, Enzymes)",
-            "Monosodium Glutamate (Flavor Enhancer)",
-            "Artificial Color",
-            "Calcium and Sodium Caseinates (Milk Derived)",
-            "Butter Oil",
-            "Yellow 6 Lake",
-            "Lactic Acid",
-            "Yellow 5 Lake",
-            "Natural Flavors",
-            "Invert Sugar",
-            "Corn Syrup",
-            "Modified Corn Starch",
-            "White Mineral Oil",
-            "Natural and artificial flavourings",
-            "Red 40",
-            "Carnauba Wax"
-    };
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -182,32 +112,7 @@ public class App extends Application implements EMDKListener, StatusListener, Da
         } catch (ScannerException e) {
             Logger.e(TAG, "ScannerException: " + e.getMessage(), e);
         }
-
-//        // Init Profile Manager
-//        mProfileManager = (ProfileManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.PROFILE);
-//
-//        // Apply Profile
-//        applyProfile(false);
     }
-
-//    private void applyProfile(boolean proximityOn) {
-//        // Get an instance of VersionManager
-//        VersionManager versionManager = (VersionManager) mEmdkManager.getInstance(EMDKManager.FEATURE_TYPE.VERSION);
-//        Log.i(TAG, "MX Version: " + versionManager.getVersion(VersionManager.VERSION_TYPE.MX));
-//
-//        // Apply Profile
-//        String profileName = proximityOn ? PROFILE_PROXIMITY_ON : PROFILE_PROXIMITY_OFF;
-//        EMDKResults applyProfileResults = mProfileManager.processProfile(profileName,
-//                ProfileManager.PROFILE_FLAG.SET, (String[]) null);
-//
-//        // Check the return status of processProfile
-//        if (applyProfileResults.statusCode == EMDKResults.STATUS_CODE.CHECK_XML) {
-//            Log.i(TAG, "Applying '" + profileName + "' was successful");
-//        } else {
-//            Log.i(TAG, "Applying '" + profileName + "' failed");
-//        }
-//
-//    }
 
     void initScanner() throws ScannerException {
         Logger.i(TAG, "Init Scanner");
@@ -328,4 +233,17 @@ public class App extends Application implements EMDKListener, StatusListener, Da
                 break;
         }
     }
+
+    private void startScannerRead() {
+        try {
+            try { Thread.sleep(100); }
+            catch (InterruptedException e) { e.printStackTrace(); }
+            mScanner.read();
+        } catch (ScannerException e) {
+            Logger.e(TAG, "ScannerException: " + e.getMessage(), e);
+        }
+    }
+
+
+
 }
