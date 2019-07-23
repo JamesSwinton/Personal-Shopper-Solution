@@ -48,128 +48,203 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="150dp">
+
+      <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#DADADA"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_add_test"
+        android:padding="10dp"/>
+
+    </RelativeLayout>
+
     <LinearLayout
       android:id="@+id/pop_up_details_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical">
 
-      <android.support.design.widget.TextInputLayout
+      <!-- Title Layout -->
+      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center"
+        android:weightSum="10">
 
-        <EditText
-          android:id="@+id/pop_up_title"
-          android:layout_width="match_parent"
+        <ImageView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_label"
+          android:tint="#616161"
+          android:padding="2dp"
+          android:layout_weight="1"/>
+
+        <android.support.design.widget.TextInputLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:hint="Title"
-          android:inputType="text"/>
-      </android.support.design.widget.TextInputLayout>
+          android:layout_weight="9"
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-      <android.support.design.widget.TextInputLayout
+          <EditText
+            android:id="@+id/pop_up_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_asterisk"
+            android:hint="Title"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/regionIdentifier"
+            android:inputType="text"/>
+        </android.support.design.widget.TextInputLayout>
+
+      </LinearLayout>
+
+      <!-- Barcode Layout -->
+      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center"
+        android:weightSum="10">
 
-        <EditText
-          android:id="@+id/pop_up_display_time"
-          android:layout_width="match_parent"
+        <ImageView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_qr_code"
+          android:padding="3dp"
+          android:tint="#616161"
+          android:layout_weight="1"/>
+
+        <android.support.design.widget.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="9"
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+          <EditText
+            android:id="@+id/regionIdentifier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_asterisk"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/pop_up_display_time"
+            android:hint="Barcode / Identifier"/>
+        </android.support.design.widget.TextInputLayout>
+
+      </LinearLayout>
+
+      <!-- Timeout Layout -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center"
+        android:weightSum="10">
+
+        <ImageView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_clock"
+          android:tint="#616161"
+          android:padding="2dp"
+          android:layout_weight="1"/>
+
+        <android.support.design.widget.TextInputLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:hint="Time to Display in Seconds"
-          android:inputType="number"/>
-      </android.support.design.widget.TextInputLayout>
+          android:layout_weight="9"
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+          <EditText
+            android:id="@+id/pop_up_display_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_asterisk"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/pop_up_message"
+            android:hint="Time-out"
+            android:inputType="number"/>
+        </android.support.design.widget.TextInputLayout>
+
+      </LinearLayout>
+
+      <!-- Message Layout -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center"
+        android:weightSum="10">
+
+        <ImageView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_message"
+          android:tint="#616161"
+          android:padding="2dp"
+          android:layout_weight="1"/>
+
+        <android.support.design.widget.TextInputLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="9"
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+          <EditText
+            android:id="@+id/pop_up_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Message"
+            android:inputType="text"/>
+        </android.support.design.widget.TextInputLayout>
+
+      </LinearLayout>
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="4dp"
-        android:orientation="horizontal">
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:gravity="center"
+        android:weightSum="10">
 
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.95"
-          android:layout_gravity="center"
-          android:paddingStart="4dp"
-          android:text="Display Message in Pop Up ?"/>
+        <ImageView
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_geofence"
+          android:padding="2dp"
+          android:tint="#616161"
+          android:layout_weight="1"/>
 
-        <CheckBox
-          android:id="@+id/display_pop_up_message"
-          android:layout_width="wrap_content"
+        <android.support.design.button.MaterialButton
+          android:id="@+id/define_geofence"
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="0.05"
-          android:layout_gravity="center"
-          android:paddingEnd="-1dp"
-          android:checked="true"/>
+          android:background="#686868"
+          android:drawableEnd="@drawable/ic_open_external"
+          android:layout_weight="9"
+          android:drawableTint="@color/white"
+          android:text="DEFINE GEOFENCE"
+          app:icon="@drawable/ic_open_external"
+          app:iconGravity="textStart"
+          app:backgroundTint="#686868"
+          style="@style/AppTheme.RoundedCornerMaterialButton"/>
 
       </LinearLayout>
-
-      <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-          android:id="@+id/pop_up_message"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="Message"
-          android:inputType="text"/>
-      </android.support.design.widget.TextInputLayout>
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.95"
-          android:layout_gravity="center"
-          android:paddingStart="4dp"
-          android:text="Display Icon in Pop-Up ?"/>
-
-        <CheckBox
-          android:id="@+id/display_pop_up_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.05"
-          android:layout_gravity="center"
-          android:paddingEnd="-1dp"
-          android:checked="true"/>
-
-      </LinearLayout>
-
-      <View
-        android:id="@+id/image_divider_top"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e0e0e0"/>
-
-      <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:src="@drawable/ic_add_image"/>
-
-      <View
-        android:id="@+id/image_divider_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e0e0e0"/>
-
-      <Button
-        android:id="@+id/define_geofence"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="#686868"
-        android:drawableEnd="@drawable/ic_open_external"
-        android:drawableTint="@color/white"
-        android:text="DEFINE GEOFENCE"
-        style="@style/Widget.AppCompat.Button.Colored"/>
 
     </LinearLayout>
 
