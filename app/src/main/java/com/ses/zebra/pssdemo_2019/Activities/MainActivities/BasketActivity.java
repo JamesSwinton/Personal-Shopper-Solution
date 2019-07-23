@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ses.zebra.pssdemo_2019.Activities.AssistantActivities.VoiceAssistantActivityV2;
 import com.ses.zebra.pssdemo_2019.Activities.AssistantActivities.WorkForceConnectActivities.ChatAssistantActivity;
 import com.ses.zebra.pssdemo_2019.Activities.AssistantActivities.MessageAssistantActivity;
 import com.ses.zebra.pssdemo_2019.Activities.AssistantActivities.VoiceAssistantActivity;
@@ -210,7 +211,7 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
     }
 
     private void displayVoiceActivity() {
-        Intent voiceActivity = new Intent(BasketActivity.this, VoiceAssistantActivity.class);
+        Intent voiceActivity = new Intent(BasketActivity.this, VoiceAssistantActivityV2.class);
         voiceActivity.putExtra(FROM, BASKET_ACTIVITY);
         startActivity(voiceActivity);
     }

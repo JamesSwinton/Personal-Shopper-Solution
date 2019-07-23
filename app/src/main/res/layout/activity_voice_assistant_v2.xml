@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical"
+    tools:context=".Activities.AssistantActivities.VoiceAssistantActivity">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="75dp"
+      android:orientation="horizontal"
+      android:background="@color/colorPrimary"
+      android:weightSum="1"
+      android:layout_weight="0.2"
+      android:gravity="center">
+
+      <ImageView
+        android:id="@+id/headerIcon"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight="0.15"
+        android:tint="#FFF"
+        android:src="@drawable/ic_back" />
+
+      <TextView
+        android:id="@+id/headerText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-light"
+        android:textAlignment="center"
+        android:textColor="#FFF"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:layout_weight="0.85"
+        android:text="zVoice Assistant"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:layout_weight="0.8"
+      android:weightSum="1">
+
+      <ImageView
+        android:id="@+id/contextualVoiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:gravity="center"
+        android:src="@drawable/ic_microphone"
+        android:scaleType="fitCenter"
+        android:padding="32dp"
+        style="@style/ApiAi.Microphone" />
+
+      <TextView
+        android:id="@+id/voiceAssistantChatLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
+        android:background="#bdbdbd"
+        android:padding="10dp"
+        android:scrollbars="vertical"
+        android:layout_margin="10dp"/>
+
+    </LinearLayout>
+
+
+  </LinearLayout>
+</layout>
