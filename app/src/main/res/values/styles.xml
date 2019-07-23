@@ -15,4 +15,9 @@
         <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
     </style>
 
+    <!-- Rounded Corner Material Button -->
+    <style name="AppTheme.RoundedCornerMaterialButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/material_button_rounded_corners</item>
+    </style>
+
 </resources>
