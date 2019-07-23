@@ -1,8 +1,10 @@
 package com.ses.zebra.pssdemo_2019.Activities.SettingsActivities;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
@@ -11,28 +13,36 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.ses.zebra.pssdemo_2019.Activities.BaseActivity;
+import com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.AddOrEditStock.getBarcode;
 import com.ses.zebra.pssdemo_2019.App;
 import com.ses.zebra.pssdemo_2019.Debugging.Logger;
+import com.ses.zebra.pssdemo_2019.Fragments.NoMapFragment;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.GeofenceData;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpData;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
 import com.ses.zebra.pssdemo_2019.R;
 import com.ses.zebra.pssdemo_2019.Utilities.UriHelper;
 import com.ses.zebra.pssdemo_2019.databinding.ActivityGeofenceSettingsBinding;
+import com.symbol.emdk.barcode.ScanDataCollection;
+import com.symbol.emdk.barcode.ScanDataCollection.ScanData;
+import com.symbol.emdk.barcode.Scanner;
+import com.symbol.emdk.barcode.ScannerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GeofenceSettingsActivity extends BaseActivity {
+public class GeofenceSettingsActivity extends BaseActivity implements Scanner.DataListener {
 
   // Debugging
   private static final String TAG = "GeoSettingsActivity";
@@ -63,9 +73,6 @@ public class GeofenceSettingsActivity extends BaseActivity {
     // Init Back Listener
     mDataBinding.headerIcon.setOnClickListener(view -> confirmBackNavigation());
 
-    // Init Switch Listener for Check boxes (Optional message / icon)
-    initDisplayOptionsListener();
-
     // Init Geofence Listener
     mDataBinding.defineGeofence.setOnClickListener(view -> startCreateGeofenceActivity());
 
@@ -82,13 +89,41 @@ public class GeofenceSettingsActivity extends BaseActivity {
   @Override
   protected void onResume() {
     super.onResume();
+    // Enable Scanner
+    mDataBinding.defineGeofence.postDelayed(this::enableScanner, 100);
 
     if (mPopUpRegion.getGeoFenceData() != null && mPopUpRegion.getGeoFenceData().getVertexPoints().size() == 360) {
-      mDataBinding.defineGeofence.setText("RE-DEFINE GEOFENCE");
-      mDataBinding.defineGeofence.setBackgroundColor(getResources().getColor(R.color.zebraGreen));
+      mDataBinding.defineGeofence.setText("EDIT GEOFENCE");
+      mDataBinding.defineGeofence.setBackgroundTintList(
+          ColorStateList.valueOf(getResources().getColor(R.color.zebraGreen)));
     } else {
       mDataBinding.defineGeofence.setText("DEFINE GEOFENCE");
-      mDataBinding.defineGeofence.setBackgroundColor(getResources().getColor(R.color.zebraRed));
+      mDataBinding.defineGeofence.setBackgroundTintList(
+          ColorStateList.valueOf(getResources().getColor(R.color.zebraRed)));
+    }
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+    // Disable Scanner
+    disableScanner();
+  }
+
+  private void enableScanner() {
+    final Scanner.DataListener dataListener = this;
+    try {
+      ((App) getApplicationContext()).enableScanner(dataListener);
+    } catch (ScannerException e) {
+      Log.e(TAG, "ScannerException: " + e.getMessage());
+    }
+  }
+
+  private void disableScanner() {
+    try {
+      ((App) getApplicationContext()).disableScanner(this);
+    } catch (ScannerException e) {
+      Log.e(TAG, "ScannerException: " + e.getMessage());
     }
   }
 
@@ -109,14 +144,6 @@ public class GeofenceSettingsActivity extends BaseActivity {
     confirmExitDialog.getWindow().getDecorView().setSystemUiVisibility(
         this.getWindow().getDecorView().getSystemUiVisibility());
     confirmExitDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-  }
-
-  private void initDisplayOptionsListener() {
-    mDataBinding.displayPopUpIcon.setOnCheckedChangeListener((compoundButton, checked) ->
-        mDataBinding.image.setVisibility(checked ? View.VISIBLE : View.GONE));
-
-    mDataBinding.displayPopUpMessage.setOnCheckedChangeListener((compoundButton, checked) ->
-        mDataBinding.popUpMessage.setVisibility(checked ? View.VISIBLE : View.GONE));
   }
 
   private void startCreateGeofenceActivity() {
@@ -192,6 +219,12 @@ public class GeofenceSettingsActivity extends BaseActivity {
       return false;
     }
 
+    // Validate Barcode
+    if (TextUtils.isEmpty(mDataBinding.regionIdentifier.getText())) {
+      mDataBinding.regionIdentifier.setError("Please enter a barcode");
+      return false;
+    }
+
     // Check Number is Int and between 3 -> 120
     try {
       if (Integer.parseInt(mDataBinding.popUpDisplayTime.getText().toString()) > 120 ||
@@ -201,19 +234,6 @@ public class GeofenceSettingsActivity extends BaseActivity {
       }
     } catch (NumberFormatException e) {
       mDataBinding.popUpDisplayTime.setError("Please enter a integer between 3 and 120");
-      return false;
-    }
-
-    // Check Message
-    if (mDataBinding.displayPopUpMessage.isChecked() &&
-        TextUtils.isEmpty(mDataBinding.popUpMessage.getText())) {
-      mDataBinding.popUpMessage.setError("Please enter a message");
-      return false;
-    }
-
-    if (mDataBinding.displayPopUpIcon.isChecked()
-        && mDataBinding.image.getDrawable() == getResources().getDrawable(R.drawable.ic_add_image)) {
-      showDialog("Error!", "Please make sure to add an image.", false);
       return false;
     }
 
@@ -228,12 +248,13 @@ public class GeofenceSettingsActivity extends BaseActivity {
 
     // Create Region Data
     PopUpData popUpData = new PopUpData();
+    popUpData.setBarcode(mDataBinding.regionIdentifier.getText().toString());
     popUpData.setTitle(mDataBinding.popUpTitle.getText().toString());
     popUpData.setDisplayTimeSeconds(Integer.parseInt(mDataBinding.popUpDisplayTime.getText().toString()));
-    if (mDataBinding.displayPopUpMessage.isChecked()) {
+    if (mDataBinding.popUpMessage.getText() != null) {
       popUpData.setMessage(mDataBinding.popUpMessage.getText().toString());
     }
-    if (mDataBinding.displayPopUpIcon.isChecked()) {
+    if (mRegionImage != null) {
       popUpData.setImage(mRegionImage);
     }
 
@@ -306,4 +327,38 @@ public class GeofenceSettingsActivity extends BaseActivity {
 
   @Override
   protected String getInheritedTag() { return TAG; }
+
+  @Override
+  public void onData(ScanDataCollection scanDataCollection) {
+    // Get Scanner Data as []
+    ScanDataCollection.ScanData[] scannedData = scanDataCollection.getScanData().toArray(
+        new ScanDataCollection.ScanData[0]);
+
+    // If not End shop -> Parse Barcode
+    new GeofenceSettingsActivity.getBarcode(this).execute(scannedData);
+  }
+
+  public static class getBarcode extends AsyncTask<ScanData, Void, String> {
+
+    private WeakReference<GeofenceSettingsActivity> activityWeakReference;
+
+    getBarcode(GeofenceSettingsActivity activity) {
+      this.activityWeakReference = new WeakReference<>(activity);
+    }
+
+    @Override
+    protected String doInBackground(ScanDataCollection.ScanData... scanDataArray) {
+      return scanDataArray[0].getData();
+    }
+
+    @Override
+    protected void onPostExecute(String barcode) {
+      // Get context
+      GeofenceSettingsActivity activityContext = activityWeakReference.get();
+      if (activityContext == null || activityContext.isFinishing()) return;
+
+      // Set Barcode
+      activityContext.mDataBinding.regionIdentifier.setText(barcode == null ? "" : barcode);
+    }
+  }
 }

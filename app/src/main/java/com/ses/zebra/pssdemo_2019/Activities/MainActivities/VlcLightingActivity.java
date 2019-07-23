@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -42,6 +43,7 @@ import com.philips.indoorpositioning.library.IndoorPositioning;
 import com.philips.indoorpositioning.library.IndoorPositioning.Listener;
 import com.ses.zebra.pssdemo_2019.Activities.BaseActivity;
 import com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.GeofenceListActivity;
+import com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.GeofenceSettingsActivity;
 import com.ses.zebra.pssdemo_2019.App;
 import com.ses.zebra.pssdemo_2019.Debugging.Logger;
 import com.ses.zebra.pssdemo_2019.Fragments.NoMapFragment;
@@ -51,12 +53,17 @@ import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.VertexPoint;
 import com.ses.zebra.pssdemo_2019.R;
 import com.ses.zebra.pssdemo_2019.databinding.ActivityVlcLightingBinding;
+import com.symbol.emdk.barcode.ScanDataCollection;
+import com.symbol.emdk.barcode.ScanDataCollection.ScanData;
+import com.symbol.emdk.barcode.Scanner;
+import com.symbol.emdk.barcode.ScannerException;
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class VlcLightingActivity extends BaseActivity {
+public class VlcLightingActivity extends BaseActivity implements Scanner.DataListener {
 
     // Debugging
     private static final String TAG = "VlcLightingActivity";
@@ -93,6 +100,7 @@ public class VlcLightingActivity extends BaseActivity {
     private static int locationFound;
     private static AlertDialog discountDialog;
     private static RegionMonitor mRegionMonitor;
+    private static String mRegionBarcode;
 
     @Override
     protected String getInheritedTag() {
@@ -182,6 +190,22 @@ public class VlcLightingActivity extends BaseActivity {
             @Override
             public void onEnterRegion(Region region) {
                 Logger.i(TAG, "Entered Region: " + region.getId());
+
+                // Get PopUpRegion
+                PopUpRegion currentRegion = null;
+                for (PopUpRegion popUpRegion : App.mPopUpRegions) {
+                    if (popUpRegion.getId() == region.getId()) {
+                        currentRegion = popUpRegion;
+                    }
+                }
+
+                // Check if we're in the region we're navigating to
+                if (currentRegion != null  && mIndoorMap != null
+                    && currentRegion.getPopUpData().getBarcode().equals(mRegionBarcode)) {
+                    mIndoorMap.stopNavigateToLocation();
+                }
+
+                // Show Dialog
                 showDiscountByRegion(region);
             }
 
@@ -249,6 +273,10 @@ public class VlcLightingActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+      // Enable Scanner
+      mDataBinding.heading.postDelayed(this::enableScanner, 100);
+
         // Perform Null Check on IndoorPositioning Object
         if (mIndoorPositioning != null) {
           // Register for Location Callbacks (Passing interface and handler as parameters)
@@ -271,7 +299,27 @@ public class VlcLightingActivity extends BaseActivity {
           // Unregister from Location Callbacks
           mIndoorPositioning.unregister();
         }
+
+      // Disable Scanner
+      disableScanner();
     }
+
+  private void enableScanner() {
+    final Scanner.DataListener dataListener = this;
+    try {
+      ((App) getApplicationContext()).enableScanner(dataListener);
+    } catch (ScannerException e) {
+      Log.e(TAG, "ScannerException: " + e.getMessage());
+    }
+  }
+
+  private void disableScanner() {
+    try {
+      ((App) getApplicationContext()).disableScanner(this);
+    } catch (ScannerException e) {
+      Log.e(TAG, "ScannerException: " + e.getMessage());
+    }
+  }
 
     /*
      Map Methods
@@ -677,4 +725,50 @@ public class VlcLightingActivity extends BaseActivity {
         mDataBinding.bottomNavLayout.vlcText.setTextColor(Color.WHITE);
     }
 
+  @Override
+  public void onData(ScanDataCollection scanDataCollection) {
+    // Get Scanner Data as []
+    ScanDataCollection.ScanData[] scannedData = scanDataCollection.getScanData().toArray(
+        new ScanDataCollection.ScanData[0]);
+
+    // If not End shop -> Parse Barcode
+    new VlcLightingActivity.getBarcode(this).execute(scannedData);
+  }
+
+  public static class getBarcode extends AsyncTask<ScanData, Void, String> {
+
+    private WeakReference<VlcLightingActivity> activityWeakReference;
+
+    getBarcode(VlcLightingActivity activity) {
+      this.activityWeakReference = new WeakReference<>(activity);
+    }
+
+    @Override
+    protected String doInBackground(ScanDataCollection.ScanData... scanDataArray) {
+      return scanDataArray[0].getData();
+    }
+
+    @Override
+    protected void onPostExecute(String barcode) {
+      // Get context
+      VlcLightingActivity activityContext = activityWeakReference.get();
+      if (activityContext == null || activityContext.isFinishing()) return;
+
+      // Start Routing
+      List<PopUpRegion> popUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
+      for (PopUpRegion popUpRegion : popUpRegions) {
+        if (popUpRegion.getPopUpData().getBarcode().equalsIgnoreCase(barcode)) {
+          mRegionBarcode = barcode;
+          // Start Routing
+          if (mIndoorMap != null) {
+            Location location = new Location(
+                popUpRegion.getGeoFenceData().getCenterPoint().getLongitude(),
+                popUpRegion.getGeoFenceData().getCenterPoint().getLatitude(),
+                0);
+            mIndoorMap.navigateToLocation(location);
+          }
+        }
+      }
+    }
+  }
 }

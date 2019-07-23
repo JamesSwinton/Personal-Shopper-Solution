@@ -14,9 +14,9 @@ public class CenterPoint implements Serializable {
   private Double longitude;
   private final static long serialVersionUID = -52363452190982004L;
 
-  public CenterPoint(double latitude, double longitude) {
-    this.latitude = latitude;
+  public CenterPoint(double longitude, double latitude) {
     this.longitude = longitude;
+    this.latitude = latitude;
   }
 
   public Double getLatitude() {

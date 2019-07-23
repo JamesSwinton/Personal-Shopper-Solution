@@ -91,7 +91,7 @@ public class CreateGeofenceActivity extends BaseActivity {
     mDataBinding.headerIcon.setOnClickListener(view -> confirmBackNavigation());
 
     // Init Save Listener
-    mDataBinding.saveButton.setOnClickListener(view -> returnGeofenceObjectAndExit());
+    mDataBinding.confirm.setOnClickListener(view -> returnGeofenceObjectAndExit());
 
     // Setup Indoor Positioning
     initialiseIndoorPositioning();

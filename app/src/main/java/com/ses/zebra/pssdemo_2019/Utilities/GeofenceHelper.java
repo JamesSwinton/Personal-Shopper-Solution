@@ -34,8 +34,6 @@ public class GeofenceHelper {
     // Convert Lat / Long to X / Y
     AnchorPoint centerAnchorPoint = new AnchorPoint(0, 0, centerLongitude, centerLatitude);
     AnchorPoint topAnchorPoint = new AnchorPoint(0, 1, centerLongitude, getTopLatitude(centerLatitude, radiusMeters));
-
-    //
     CoordinateConverter coordinateConverter = new CoordinateConverter(centerAnchorPoint, topAnchorPoint);
 
     // Create Values
@@ -53,8 +51,10 @@ public class GeofenceHelper {
     // Create Vertex Point
     List<VertexPoint> vertexPoints = new ArrayList<>();
     for (Location xyLocation : locations) {
+      // Convert XY to LatLong
       Location latLngLocation = coordinateConverter.locationFromXY(xyLocation.getLongitude(), xyLocation.getLatitude());
 
+      // Create Vertex Point
       VertexPoint vertexPoint = new VertexPoint();
       vertexPoint.setLongitude(latLngLocation.getLongitude());
       vertexPoint.setLatitude(latLngLocation.getLatitude());
@@ -63,7 +63,7 @@ public class GeofenceHelper {
 
     // Set Geofence Data
     GeofenceData geofenceData = new GeofenceData();
-    geofenceData.setCenterPoint(new CenterPoint(centerLatitude, centerLongitude));
+    geofenceData.setCenterPoint(new CenterPoint(centerLongitude, centerLatitude));
     geofenceData.setVertexPoints(vertexPoints);
     geofenceData.setRegionSizeFeetSquared(radiusMeters);
     geofenceData.setFloor(0);

@@ -7,6 +7,9 @@ import java.io.Serializable;
 
 public class PopUpData implements Serializable {
 
+  @SerializedName("barcode")
+  @Expose
+  private String barcode;
   @SerializedName("title")
   @Expose
   private String title;
@@ -26,6 +29,14 @@ public class PopUpData implements Serializable {
   @Expose
   private Integer displayTimeSeconds;
   private final static long serialVersionUID = 1785453022497605386L;
+
+  public String getBarcode() {
+    return barcode;
+  }
+
+  public void setBarcode(String barcode) {
+    this.barcode = barcode;
+  }
 
   public String getTitle() {
     return title;
