@@ -1,6 +1,7 @@
 package com.ses.zebra.pssdemo_2019.Activities.MainActivities;
 
 import android.Manifest;
+import android.Manifest.permission;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.ses.zebra.pssdemo_2019.Activities.BaseActivity;
 import com.ses.zebra.pssdemo_2019.Activities.SubActivities.NavigationMenuActivity;
 import com.ses.zebra.pssdemo_2019.App;
 import com.ses.zebra.pssdemo_2019.Debugging.Logger;
@@ -55,7 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class SplashScreenActivity extends BaseActivity {
 
     // Debugging
     private static final String TAG = "SplashScreenActivity";
@@ -63,16 +67,16 @@ public class SplashScreenActivity extends AppCompatActivity {
     // Constants
     private static final int ALL_PERMISSIONS = 1;
     private static final String mStockImagesPath = Environment.getExternalStorageDirectory()
-            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "images"
-            + File.separator;
+        + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "images"
+        + File.separator;
     private static final String mConfigFilePath = Environment.getExternalStorageDirectory()
-            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "config.ini";
+        + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "config.ini";
     private static final String mMetaFilePath = Environment.getExternalStorageDirectory()
-            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "meta.json";
+        + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "meta.json";
     private static final String mStockFilePath = Environment.getExternalStorageDirectory()
-            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "stock.json";
+        + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "stock.json";
     private static final String mGeofenceFilePath = Environment.getExternalStorageDirectory()
-            + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "geofence.json";
+        + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "geofence.json";
     private static final String SETTINGS = "Settings";
 
     // Variables
@@ -102,6 +106,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         if (checkAndRequestPermissions()) {
             // Permissions were all accepted
             Logger.i(TAG, "Permissions Enabled - Starting Imports");
+
+            // Set Serial (Needs Permission)
+            if (Build.VERSION.SDK_INT >= VERSION_CODES.P) {
+                App.mDeviceSerialNumber = Build.getSerial();
+            } else {
+                App.mDeviceSerialNumber = Build.SERIAL;
+            }
+
             // Begin importing Meta & Stock JSON
             if (importDataFiles()) {
                 // Debugging (Skip Splash Screen)
@@ -521,6 +533,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         int writeStoragePermission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readPhoneStatePermission = ContextCompat.checkSelfPermission(this,
+            permission.READ_PHONE_STATE);
 
         // Add non-granted permissions to Array for Requesting
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -538,6 +552,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
         if (writeStoragePermission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (readPhoneStatePermission != PackageManager.PERMISSION_GRANTED
+            && Build.VERSION.SDK_INT >= VERSION_CODES.P) {
+            listPermissionsNeeded.add(permission.READ_PHONE_STATE);
         }
 
         // Request permissions, if required
@@ -562,6 +580,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
 
                 // Fill with actual results from user
                 if (grantResults.length > 0) {
@@ -572,7 +591,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                             && perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                            && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                         // Permissions were all accepted -> Begin importing Meta & Stock JSON
                         importDataFiles();
                     } else {
