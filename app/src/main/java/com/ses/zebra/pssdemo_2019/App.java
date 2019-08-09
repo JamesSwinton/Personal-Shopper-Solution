@@ -3,7 +3,9 @@ package com.ses.zebra.pssdemo_2019;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Environment;
 import android.os.Handler;
 
@@ -60,12 +62,15 @@ public class App extends Application implements EMDKListener, StatusListener, Da
     public static StockItem[] mStockItems;
     public static String mDeviceSerialNumber;
     public static Config mConfig = new Config();
+    public static DEVICE_TYPE mDeviceType;
 
     public static Handler mUiThread;
 
     private boolean mIsScanning = false;
     private List<DataListener> mDataListeners;
     private static BarcodeManager mBarcodeManager;
+
+    public enum DEVICE_TYPE { PS20, MC18 }
 
     @Override
     public void onCreate() {
@@ -77,9 +82,6 @@ public class App extends Application implements EMDKListener, StatusListener, Da
         // Set Context
         mContext = getApplicationContext();
 
-        // Set Serial Number
-        mDeviceSerialNumber = Build.SERIAL;
-
         // Init TTS
         TTS.init(getApplicationContext());
 
@@ -88,6 +90,9 @@ public class App extends Application implements EMDKListener, StatusListener, Da
 
         // Init Logger -> Log Device Info
         Logger.logDeviceInfo();
+
+        // Init MC18 Vs. PS20
+        mDeviceType = getDeviceType();
     }
 
     /*
@@ -142,12 +147,15 @@ public class App extends Application implements EMDKListener, StatusListener, Da
         // Build & Set Scanner Meta (Can only be done after Scanner is Enabled)
         ScannerConfig config = mScanner.getConfig();
         config.readerParams.readerSpecific.imagerSpecific.pickList = ScannerConfig.PickList.ENABLED;
-        config.readerParams.readerSpecific.imagerSpecific.digimarcDecoding = true;
         config.scanParams.decodeAudioFeedbackUri = "system/media/audio/notifications/decode-short.wav";
         config.scanParams.decodeHapticFeedback = true;
         config.decoderParams.code128.enabled = true;
         config.decoderParams.code39.enabled = true;
         config.decoderParams.upca.enabled = true;
+        if (App.mDeviceType == DEVICE_TYPE.PS20) {
+            config.readerParams.readerSpecific.imagerSpecific.digimarcDecoding = true;
+        }
+
         mScanner.setConfig(config);
     }
 
@@ -244,6 +252,13 @@ public class App extends Application implements EMDKListener, StatusListener, Da
         }
     }
 
+    private DEVICE_TYPE getDeviceType() {
+        // Get Camera & Microphone
+        boolean hasMicrophone = getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
+        boolean hasCamera = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
 
+        // Return Device Type
+        return hasCamera && hasMicrophone ? DEVICE_TYPE.PS20 : DEVICE_TYPE.MC18;
+    }
 
 }
