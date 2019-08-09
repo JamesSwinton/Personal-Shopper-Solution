@@ -116,6 +116,9 @@ public class SplashScreenActivity extends BaseActivity {
 
             // Begin importing Meta & Stock JSON
             if (importDataFiles()) {
+                // Init MQTT
+                MQTT.init();
+
                 // Debugging (Skip Splash Screen)
                 if (App.DEBUGGING) {
                     checkDataFilesAndShowNavigationMenu();
@@ -138,6 +141,11 @@ public class SplashScreenActivity extends BaseActivity {
 
         // Unregister PowerReceiver
         unregisterReceiver(powerReceiver);
+    }
+
+    @Override
+    protected String getInheritedTag() {
+        return TAG;
     }
 
     @Override
