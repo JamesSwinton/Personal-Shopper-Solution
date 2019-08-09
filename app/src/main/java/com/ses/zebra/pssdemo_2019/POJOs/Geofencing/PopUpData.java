@@ -13,6 +13,9 @@ public class PopUpData implements Serializable {
   @SerializedName("title")
   @Expose
   private String title;
+  @SerializedName("product_name")
+  @Expose
+  private String productName;
   @SerializedName("display_message")
   @Expose
   private Boolean displayMessage;
@@ -44,6 +47,14 @@ public class PopUpData implements Serializable {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public String getProductName() {
+    return productName;
+  }
+
+  public void setProductName(String productName) {
+    this.productName = productName;
   }
 
   public Boolean getDisplayMessage() {
