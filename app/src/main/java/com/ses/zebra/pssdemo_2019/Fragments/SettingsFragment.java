@@ -1,10 +1,15 @@
 package com.ses.zebra.pssdemo_2019.Fragments;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 
+import android.widget.Toast;
 import com.ses.zebra.pssdemo_2019.Activities.SettingsActivities.SettingsActivity;
+import com.ses.zebra.pssdemo_2019.App;
 import com.ses.zebra.pssdemo_2019.R;
+import com.ses.zebra.pssdemo_2019.App.DEVICE_TYPE;
 import com.takisoft.fix.support.v7.preference.EditTextPreference;
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
@@ -20,6 +25,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     //
     private static final String PREF_SELECT_CURRENCY = "currency";
     private static final String PREF_EDIT_STOCK_LIST = "edit_stock_list";
+    private static final String PREF_HANDS_FREE_SCANNING = "hands_free_scanning";
     private static final String PREF_ENABLE_MQTT = "mqtt_enabled";
     private static final String PREF_CUSTOM_MQTT_SERVER = "mqtt_use_custom_broker";
     private static final String PREF_MQTT_BROKER = "mqtt_broker";
@@ -36,10 +42,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String PREF_ENABLE_CONTEXTUAL_VOICE = "contextual_voice_enabled";
     private static final String PREF_AI_CONFIG_STRING = "contextual_voice_config_string";
 
+    private static final String AUTO_SCAN_PACKAGE = "com.symbol.autoscanmgrsetting";
+    private static final String AUTO_SCAN_ACTIVITY = "com.symbol.autoscanmgrsetting.AutoScanActivity";
+
     // Variables
     private static List<Preference> mPreferences = new ArrayList<>();
     private static Preference mPrefCurrentTopic;
     private static Preference mPrefEditStockList;
+
+    private static Preference mHandsFreeScanningPreference;
+    private static Preference mEnableWfcPreference;
+    private static Preference mEnableVlcPreference;
+    private static Preference mEnableContextualVoicePreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +76,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get Commonly Used Prefs
         mPrefCurrentTopic = findPreference(PREF_CURRENT_TOPIC);
         mPrefEditStockList = findPreference(PREF_EDIT_STOCK_LIST);
-
+        mHandsFreeScanningPreference = findPreference(PREF_HANDS_FREE_SCANNING);
+        mEnableWfcPreference = findPreference(PREF_ENABLE_WFC);
+        mEnableVlcPreference = findPreference(PREF_ENABLE_VLC);
+        mEnableContextualVoicePreference = findPreference(PREF_ENABLE_CONTEXTUAL_VOICE);
 
         // Add Preferences to List
         mPreferences.add(mPrefEditStockList);
@@ -90,6 +107,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 preference.setSummary(SettingsActivity.mSharedPreferences.getString(
                         preference.getKey(), ""));
             }
+        }
+
+        // Init Settings Intent for Hands Free Scanning
+        mHandsFreeScanningPreference.setOnPreferenceClickListener(preference -> {
+            if (App.mDeviceType == DEVICE_TYPE.PS20) {
+                Intent launchIntent = new Intent(Intent.ACTION_MAIN);
+                launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                ComponentName cn = new ComponentName(AUTO_SCAN_PACKAGE, AUTO_SCAN_ACTIVITY);
+                launchIntent.setComponent(cn);
+                startActivity(launchIntent);
+            } else {
+                Toast.makeText(App.mContext, "Hands free scanning only available on PS20",
+                    Toast.LENGTH_LONG).show();
+            }
+            return false;
+        });
+
+        // Disable MC18 Settings
+        disableSettingsForMC18();
+    }
+
+    private void disableSettingsForMC18() {
+        // Disable un-usable settings for the MC18
+        if (App.mDeviceType == DEVICE_TYPE.MC18) {
+            mEnableWfcPreference.setEnabled(false);
+            mEnableVlcPreference.setEnabled(false);
+            mEnableContextualVoicePreference.setEnabled(false);
         }
     }
 
