@@ -1,5 +1,6 @@
 package com.ses.zebra.pssdemo_2019.Activities.MainActivities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -17,9 +18,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 import android.util.SizeF;
@@ -53,6 +56,7 @@ import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpData;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
 import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.VertexPoint;
 import com.ses.zebra.pssdemo_2019.R;
+import com.ses.zebra.pssdemo_2019.TTS;
 import com.ses.zebra.pssdemo_2019.databinding.ActivityVlcLightingBinding;
 import com.symbol.emdk.barcode.ScanDataCollection;
 import com.symbol.emdk.barcode.ScanDataCollection.ScanData;
@@ -63,6 +67,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import org.apache.commons.lang.StringUtils;
 
 public class VlcLightingActivity extends BaseActivity implements Scanner.DataListener {
 
@@ -70,6 +77,8 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     private static final String TAG = "VlcLightingActivity";
 
     // Constants
+    private static final int VOICE_RECOGNITION_INTENT = 100;
+
     private static final String MAP = "map.bin";
     private static final Handler mHandler = new Handler();
     private static final SizeF mVertexAnnotationSize = new SizeF(0.01f, 0.01f);
@@ -126,6 +135,9 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         initBottomNavBar();
         mDataBinding.headerLayout.headerText.setText("Zebra Locationing");
         mDataBinding.headerLayout.headerIcon.setImageResource(R.drawable.ic_vlc_location);
+        mDataBinding.headerLayout.helpIcon.setImageResource(R.drawable.ic_microphone);
+        mDataBinding.headerLayout.helpIcon.setColorFilter(getResources().getColor(R.color.white));
+        mDataBinding.headerLayout.helpIcon.setOnClickListener(view -> startSpeechRecognition());
 
         // Init Indoor Positioning
         String configString = getConfig();
@@ -181,7 +193,7 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
         for (Location[] region : regions) {
             for (Location location : region) {
                 mIndoorMap.addAnnotation(new Annotation(location, annotationBitmap, false,
-                        mVertexAnnotationSize, "Test"));
+                    mVertexAnnotationSize, "Test"));
             }
         }
     }
@@ -327,13 +339,62 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
    */
 
     private void startSpeechRecognition() {
-
+      Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+      intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+      intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+      intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "What can I help with?");
+      try {
+        startActivityForResult(intent, VOICE_RECOGNITION_INTENT);
+      } catch (ActivityNotFoundException a) {
+        Toast.makeText(getApplicationContext(), "Sorry! Your device doesn't support speech input",
+            Toast.LENGTH_LONG).show();
+      }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+      super.onActivityResult(requestCode, resultCode, data);
+      switch (requestCode) {
+        case VOICE_RECOGNITION_INTENT: {
+          if (resultCode == RESULT_OK && data != null) {
+            // List of Results
+            List<String> speechResults = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+            // Log Response Info
+            Log.d(TAG, "AIResponse Result Successful");
+            Logger.i(TAG, "Speech: " + speechResults.get(0));
+
+            // TODO: Init Navigation Based on Result
+            boolean productFound = false;
+            List<PopUpRegion> popUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
+            baseLoop: for (PopUpRegion popUpRegion : popUpRegions) {
+                for (String speechResult: speechResults) {
+                    if (StringUtils.containsIgnoreCase(speechResult, popUpRegion.getPopUpData().getProductName())) {
+                        productFound = true;
+                        mRegionBarcode = popUpRegion.getPopUpData().getBarcode();
+                        // Start Routing
+                        if (mIndoorMap != null) {
+                            Location location = new Location(
+                                popUpRegion.getGeoFenceData().getCenterPoint().getLongitude(),
+                                popUpRegion.getGeoFenceData().getCenterPoint().getLatitude(),
+                                0);
+                            mIndoorMap.navigateToLocation(location);
+                            break baseLoop;
+                        }
+                    }
+                }
+            }
+
+            // Notify failure
+            if (!productFound) {
+                Toast.makeText(this, "Product not found", Toast.LENGTH_LONG).show();
+            }
+
+          }
+        }
+      break;
     }
+  }
 
     /*
      Map Methods
