@@ -148,7 +148,7 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
         boolean wfcEnabled = mSharedPreferences.getBoolean(PREF_ENABLE_WFC, false);
 
         // Voice Assistant Click Listener
-        if (contextualVoiceEnabled) {
+        if (contextualVoiceEnabled && hasMicrophone) {
             voiceAssistant.setOnClickListener(view -> displayVoiceActivity());
         } else {
             // Disable Voice Assistant
@@ -159,11 +159,12 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
 
             // Set Toast Message
             voiceAssistant.setOnClickListener(view -> Toast.makeText(this,
-                    "Voice Assistant disabled in settings", Toast.LENGTH_LONG).show());
+                hasMicrophone ? "Voice Assistant disabled in settings"
+                    : "You need a microphone to use voice assistant", Toast.LENGTH_LONG).show());
         }
 
         // MQTT Click Listener
-        if (mqttEnabled && hasMicrophone) {
+        if (mqttEnabled) {
             messageAssistant.setOnClickListener(view -> displayMessageActivity());
         } else {
             // Disable MQTT
@@ -174,9 +175,7 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
 
             // Set Toast Message
             messageAssistant.setOnClickListener(view -> Toast.makeText(this,
-                    (hasMicrophone ? "MQTT Disabled in Settings"
-                            : "You need a microphone to use MQTT"),
-                    Toast.LENGTH_LONG).show());
+                    "MQTT Disabled in Settings", Toast.LENGTH_LONG).show());
         }
 
         // WFC Click Listener
