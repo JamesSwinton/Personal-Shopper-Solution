@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/headerLayout"
-            layout="@layout/layout_header_bar_no_help" />
+            layout="@layout/layout_header_bar" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/basketLayout"
