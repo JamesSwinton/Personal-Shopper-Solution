@@ -8,8 +8,8 @@ android {
         applicationId "com.ses.zebra.pssdemo_2019"
         minSdkVersion 22 // Support 22+ (MC18 = 22 (Lollipop) | PS20 = 28 (Oreo))
         targetSdkVersion 28
-        versionCode 7
-        versionName "3.4"
+        versionCode 9
+        versionName "4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
@@ -23,12 +23,17 @@ android {
         debug {
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
     dataBinding {
-        enabled = true
+        enabled true
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = new File("Personal Shopper Solution (v" + variant.versionName + ").apk")
+        }
     }
 }
 
