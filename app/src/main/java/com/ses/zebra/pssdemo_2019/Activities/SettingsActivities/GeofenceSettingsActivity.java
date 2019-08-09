@@ -219,6 +219,12 @@ public class GeofenceSettingsActivity extends BaseActivity implements Scanner.Da
       return false;
     }
 
+    // Validate Product Name
+    if (TextUtils.isEmpty(mDataBinding.productName.getText())) {
+      mDataBinding.productName.setError("Please product name");
+      return false;
+    }
+
     // Validate Barcode
     if (TextUtils.isEmpty(mDataBinding.regionIdentifier.getText())) {
       mDataBinding.regionIdentifier.setError("Please enter a barcode");
@@ -250,6 +256,7 @@ public class GeofenceSettingsActivity extends BaseActivity implements Scanner.Da
     PopUpData popUpData = new PopUpData();
     popUpData.setBarcode(mDataBinding.regionIdentifier.getText().toString());
     popUpData.setTitle(mDataBinding.popUpTitle.getText().toString());
+    popUpData.setProductName(mDataBinding.productName.getText().toString());
     popUpData.setDisplayTimeSeconds(Integer.parseInt(mDataBinding.popUpDisplayTime.getText().toString()));
     if (mDataBinding.popUpMessage.getText() != null) {
       popUpData.setMessage(mDataBinding.popUpMessage.getText().toString());
