@@ -34,11 +34,11 @@
             android:key="hands_free_scanning"
             android:title="Hands Free Scanning"
             android:summary="Enable / disable hands free scanning">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetPackage="com.symbol.autoscanmgrsetting"
-                android:targetClass="com.symbol.autoscanmgrsetting.AutoScanActivity">
-            </intent>
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:targetPackage="com.symbol.autoscanmgrsetting"-->
+                <!--android:targetClass="com.symbol.autoscanmgrsetting.AutoScanActivity">-->
+            <!--</intent>-->
         </Preference>
 
     </PreferenceCategory>
@@ -160,6 +160,7 @@
         <Preference
           android:key="configure_geofence"
           android:title="Configure Geofences"
+          android:dependency="vlc_enabled"
           android:summary="Add or remove Geofences from the VLC Map">
             <intent
               android:action="android.intent.action.VIEW"
