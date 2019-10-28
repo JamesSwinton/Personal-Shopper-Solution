@@ -8,8 +8,8 @@ android {
         applicationId "com.ses.zebra.pssdemo_2019"
         minSdkVersion 22 // Support 22+ (MC18 = 22 (Lollipop) | PS20 = 28 (Oreo))
         targetSdkVersion 28
-        versionCode 9
-        versionName "4.1"
+        versionCode 10
+        versionName "4.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
@@ -21,6 +21,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     dataBinding {
