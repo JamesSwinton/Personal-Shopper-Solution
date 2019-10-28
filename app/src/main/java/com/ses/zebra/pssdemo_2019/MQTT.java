@@ -108,6 +108,7 @@ public class MQTT {
                 // Set Connection Options
                 MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
                 mqttConnectOptions.setCleanSession(true);
+                mqttConnectOptions.setAutomaticReconnect(true);
                 mqttConnectOptions.setSocketFactory(getSocketFactory());
                 mqttConnectOptions.setUserName(mMqttUser);
                 mqttConnectOptions.setPassword(mMqttPass.toCharArray());

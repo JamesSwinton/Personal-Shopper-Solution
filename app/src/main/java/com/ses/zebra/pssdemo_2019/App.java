@@ -9,6 +9,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.Environment;
 import android.os.Handler;
 
+import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,8 +19,11 @@ import com.ses.zebra.pssdemo_2019.POJOs.Geofencing.PopUpRegion;
 import com.ses.zebra.pssdemo_2019.POJOs.Meta;
 import com.ses.zebra.pssdemo_2019.POJOs.StockItem;
 import com.ses.zebra.pssdemo_2019.POJOs.Sub.CalcNutrient;
+import com.symbol.emdk.EMDKBase;
+import com.symbol.emdk.EMDKException;
 import com.symbol.emdk.EMDKManager;
 import com.symbol.emdk.EMDKManager.EMDKListener;
+import com.symbol.emdk.EMDKManager.FEATURE_TYPE;
 import com.symbol.emdk.ProfileManager;
 import com.symbol.emdk.barcode.BarcodeManager;
 import com.symbol.emdk.barcode.ScanDataCollection;
@@ -108,8 +112,7 @@ public class App extends Application implements EMDKListener, StatusListener, Da
 
         // Init Barcode Manager
         Logger.i(TAG, "Init Barcode Manager");
-        mBarcodeManager = (BarcodeManager)
-                mEmdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
+        mBarcodeManager = (BarcodeManager) mEmdkManager.getInstance(FEATURE_TYPE.BARCODE);
 
         // Init Scanner
         try {
@@ -117,6 +120,7 @@ public class App extends Application implements EMDKListener, StatusListener, Da
         } catch (ScannerException e) {
             Logger.e(TAG, "ScannerException: " + e.getMessage(), e);
         }
+
     }
 
     void initScanner() throws ScannerException {
@@ -153,7 +157,7 @@ public class App extends Application implements EMDKListener, StatusListener, Da
         config.decoderParams.code39.enabled = true;
         config.decoderParams.upca.enabled = true;
         if (App.mDeviceType == DEVICE_TYPE.PS20) {
-            config.readerParams.readerSpecific.imagerSpecific.digimarcDecoding = true;
+            //config.readerParams.readerSpecific.imagerSpecific.digimarcDecoding = true;
         }
 
         mScanner.setConfig(config);
