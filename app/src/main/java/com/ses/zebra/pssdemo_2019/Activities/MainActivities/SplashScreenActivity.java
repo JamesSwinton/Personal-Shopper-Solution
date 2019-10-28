@@ -174,6 +174,7 @@ public class SplashScreenActivity extends BaseActivity {
     }
 
     private void initSplashScreen() {
+        Log.i(TAG, "Loading Splash Screen Animation");
         Glide.with(this).load(R.raw.splash_animation_lesly)
                 .into(mDataBinding.splashScreenLogo);
 
