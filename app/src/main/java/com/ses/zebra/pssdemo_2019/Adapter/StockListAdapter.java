@@ -40,10 +40,9 @@ public class StockListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int EMPTY_STOCK_LIST_VIEW_TYPE = 0;
     private static final int POPULATED_STOCK_LIST_VIEW_TYPE = 1;
 
-
     // Variables
-    private static StockItem[] mStockItems;
-    private static EditOrDeleteStockItemCallback mEditOrDeleteStockItemCallback;
+    private StockItem[] mStockItems;
+    private EditOrDeleteStockItemCallback mEditOrDeleteStockItemCallback;
 
     public StockListAdapter(EditOrDeleteStockItemCallback editOrDeleteStockItemCallback) {
         mStockItems = App.mStockItems == null ? new StockItem[0] : App.mStockItems;
