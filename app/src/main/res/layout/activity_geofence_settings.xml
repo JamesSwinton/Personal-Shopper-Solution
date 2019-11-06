@@ -48,242 +48,255 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="150dp">
+      android:layout_height="match_parent">
 
-      <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#DADADA"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/ic_add_test"
-        android:padding="10dp"/>
-
-    </RelativeLayout>
-
-    <LinearLayout
-      android:id="@+id/pop_up_details_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
-
-      <!-- Title Layout -->
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:weightSum="10">
+        android:orientation="vertical">
 
-        <ImageView
-          android:layout_width="0dp"
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="150dp">
+
+          <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#DADADA"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_add_test"
+            android:padding="10dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+          android:id="@+id/pop_up_details_container"
+          android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:src="@drawable/ic_label"
-          android:tint="#616161"
-          android:padding="2dp"
-          android:layout_weight="1"/>
+          android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="9"
-          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-          <EditText
-            android:id="@+id/pop_up_title"
+          <!-- Title Layout -->
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_asterisk"
-            android:hint="Title"
-            android:singleLine="true"
-            android:nextFocusDown="@+id/product_name"
-            android:inputType="text"/>
-        </android.support.design.widget.TextInputLayout>
+            android:orientation="horizontal"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:weightSum="10">
 
-      </LinearLayout>
+            <ImageView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:src="@drawable/ic_label"
+              android:tint="#616161"
+              android:padding="2dp"
+              android:layout_weight="1"/>
 
-      <!-- Product Name Layout -->
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:weightSum="10">
+            <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="9"
+              style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <ImageView
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:src="@drawable/ic_product"
-          android:tint="#616161"
-          android:padding="2dp"
-          android:layout_weight="1"/>
+              <EditText
+                android:id="@+id/pop_up_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_asterisk"
+                android:hint="Title"
+                android:singleLine="true"
+                android:nextFocusDown="@+id/product_name"
+                android:inputType="text"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="9"
-          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+          </LinearLayout>
 
-          <EditText
-            android:id="@+id/product_name"
+          <!-- Product Name Layout -->
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_asterisk"
-            android:hint="Product Name (For voice search)"
-            android:singleLine="true"
-            android:nextFocusDown="@+id/regionIdentifier"
-            android:inputType="text"/>
-        </android.support.design.widget.TextInputLayout>
+            android:orientation="horizontal"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:weightSum="10">
 
-      </LinearLayout>
+            <ImageView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:src="@drawable/ic_product"
+              android:tint="#616161"
+              android:padding="2dp"
+              android:layout_weight="1"/>
 
-      <!-- Barcode Layout -->
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:weightSum="10">
+            <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="9"
+              style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <ImageView
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:src="@drawable/ic_qr_code"
-          android:padding="3dp"
-          android:tint="#616161"
-          android:layout_weight="1"/>
+              <EditText
+                android:id="@+id/product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_asterisk"
+                android:hint="Product Name (For voice search)"
+                android:singleLine="true"
+                android:nextFocusDown="@+id/regionIdentifier"
+                android:inputType="text"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:layout_weight="9"
-          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-          <EditText
-            android:id="@+id/regionIdentifier"
+          </LinearLayout>
+
+          <!-- Barcode Layout -->
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_asterisk"
-            android:singleLine="true"
-            android:nextFocusDown="@+id/pop_up_display_time"
-            android:hint="Barcode / Identifier"/>
-        </android.support.design.widget.TextInputLayout>
+            android:orientation="horizontal"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:weightSum="10">
 
-      </LinearLayout>
+            <ImageView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:src="@drawable/ic_qr_code"
+              android:padding="3dp"
+              android:tint="#616161"
+              android:layout_weight="1"/>
 
-      <!-- Timeout Layout -->
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:weightSum="10">
+            <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight="9"
+              style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+              <EditText
+                android:id="@+id/regionIdentifier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_asterisk"
+                android:singleLine="true"
+                android:nextFocusDown="@+id/pop_up_display_time"
+                android:hint="Barcode / Identifier"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <ImageView
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:src="@drawable/ic_clock"
-          android:tint="#616161"
-          android:padding="2dp"
-          android:layout_weight="1"/>
+          </LinearLayout>
 
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="9"
-          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-          <EditText
-            android:id="@+id/pop_up_display_time"
+          <!-- Timeout Layout -->
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_asterisk"
-            android:singleLine="true"
-            android:nextFocusDown="@+id/pop_up_message"
-            android:hint="Time-out"
-            android:inputType="number"/>
-        </android.support.design.widget.TextInputLayout>
+            android:orientation="horizontal"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:weightSum="10">
 
-      </LinearLayout>
+            <ImageView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:src="@drawable/ic_clock"
+              android:tint="#616161"
+              android:padding="2dp"
+              android:layout_weight="1"/>
 
-      <!-- Message Layout -->
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:weightSum="10">
+            <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="9"
+              style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <ImageView
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:src="@drawable/ic_message"
-          android:tint="#616161"
-          android:padding="2dp"
-          android:layout_weight="1"/>
+              <EditText
+                android:id="@+id/pop_up_display_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_asterisk"
+                android:singleLine="true"
+                android:nextFocusDown="@+id/pop_up_message"
+                android:hint="Time-out"
+                android:inputType="number"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="9"
-          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+          </LinearLayout>
 
-          <EditText
-            android:id="@+id/pop_up_message"
+          <!-- Message Layout -->
+          <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Message"
-            android:inputType="text"/>
-        </android.support.design.widget.TextInputLayout>
+            android:orientation="horizontal"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:weightSum="10">
+
+            <ImageView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:src="@drawable/ic_message"
+              android:tint="#616161"
+              android:padding="2dp"
+              android:layout_weight="1"/>
+
+            <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="9"
+              style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+              <EditText
+                android:id="@+id/pop_up_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Message"
+                android:inputType="text"/>
+            </android.support.design.widget.TextInputLayout>
+
+          </LinearLayout>
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:weightSum="10">
+
+            <ImageView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:src="@drawable/ic_geofence"
+              android:padding="2dp"
+              android:tint="#616161"
+              android:layout_weight="1"/>
+
+            <android.support.design.button.MaterialButton
+              android:id="@+id/define_geofence"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:background="#686868"
+              android:drawableEnd="@drawable/ic_open_external"
+              android:layout_weight="9"
+              android:drawableTint="@color/white"
+              android:text="DEFINE GEOFENCE"
+              app:icon="@drawable/ic_open_external"
+              app:iconGravity="textStart"
+              app:backgroundTint="#686868"
+              style="@style/AppTheme.RoundedCornerMaterialButton"/>
+
+          </LinearLayout>
+
+        </LinearLayout>
 
       </LinearLayout>
 
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:weightSum="10">
-
-        <ImageView
-          android:layout_width="0dp"
-          android:layout_height="match_parent"
-          android:src="@drawable/ic_geofence"
-          android:padding="2dp"
-          android:tint="#616161"
-          android:layout_weight="1"/>
-
-        <android.support.design.button.MaterialButton
-          android:id="@+id/define_geofence"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:background="#686868"
-          android:drawableEnd="@drawable/ic_open_external"
-          android:layout_weight="9"
-          android:drawableTint="@color/white"
-          android:text="DEFINE GEOFENCE"
-          app:icon="@drawable/ic_open_external"
-          app:iconGravity="textStart"
-          app:backgroundTint="#686868"
-          style="@style/AppTheme.RoundedCornerMaterialButton"/>
-
-      </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
   </LinearLayout>
 
