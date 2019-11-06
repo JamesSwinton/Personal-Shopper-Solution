@@ -59,18 +59,18 @@ public class CreateGeofenceActivity extends BaseActivity {
       + File.separator + "PSSDemo" + File.separator + "Stock" + File.separator + "map.bin";
 
   // Static Variables
-  private static Map mIndoorMap;
-  private static GeofenceData mGeofenceData;
+  private Map mIndoorMap;
+  private GeofenceData mGeofenceData;
 
-  private static Bitmap mRegionBitmap;
-  private static Bitmap mAnnotationBitmap;
+  private Bitmap mRegionBitmap;
+  private Bitmap mAnnotationBitmap;
 
-  private static WifiManager mWifiManager;
-  private static int mNumOfEnabledChecks = 0;
-  private static int mNumOfConnectedChecks = 0;
-  private static final int mMaxNumOfChecks = 100;
-  private static final int mDelayBetweenChecks = 100;
-  private static ConnectivityManager mConnectivityManager;
+  private WifiManager mWifiManager;
+  private int mNumOfEnabledChecks = 0;
+  private int mNumOfConnectedChecks = 0;
+  private final int mMaxNumOfChecks = 100;
+  private final int mDelayBetweenChecks = 100;
+  private ConnectivityManager mConnectivityManager;
 
   // Non-Static Variables
   private ActivityCreateGeofenceBinding mDataBinding;

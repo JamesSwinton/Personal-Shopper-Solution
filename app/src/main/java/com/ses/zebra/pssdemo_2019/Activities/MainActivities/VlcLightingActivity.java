@@ -78,6 +78,8 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
 
     // Constants
     private static final int VOICE_RECOGNITION_INTENT = 100;
+    private static final int mDelayBetweenChecks = 100;
+    private static final int mMaxNumOfChecks = 100;
 
     private static final String MAP = "map.bin";
     private static final Handler mHandler = new Handler();
@@ -94,23 +96,21 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
     public Float mHeadingDegrees, mHeadingArbitraryNorthDegrees;
     public double mLatitude, mLongitude, mAltitude;
 
-    private static Map mIndoorMap;
-    private static Bitmap regionBitmap;
-    private static Bitmap annotationBitmap;
+    private Map mIndoorMap;
+    private Bitmap regionBitmap;
+    private Bitmap annotationBitmap;
 
-    private static final int mDelayBetweenChecks = 100;
-    private static final int mMaxNumOfChecks = 100;
     private static int mNumOfConnectedChecks = 0;
     private static int mNumOfEnabledChecks = 0;
-    private static WifiManager mWifiManager;
-    private static ConnectivityManager mConnectivityManager;
+    private WifiManager mWifiManager;
+    private ConnectivityManager mConnectivityManager;
 
     // Regions
     private MapFragment mapFragment;
-    private static int locationFound;
-    private static AlertDialog discountDialog;
-    private static RegionMonitor mRegionMonitor;
-    private static String mRegionBarcode;
+    private int locationFound;
+    private AlertDialog discountDialog;
+    private RegionMonitor mRegionMonitor;
+    private String mRegionBarcode;
 
     @Override
     protected String getInheritedTag() {
@@ -833,14 +833,14 @@ public class VlcLightingActivity extends BaseActivity implements Scanner.DataLis
             List<PopUpRegion> popUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
             for (PopUpRegion popUpRegion : popUpRegions) {
                 if (popUpRegion.getPopUpData().getBarcode().equalsIgnoreCase(barcode)) {
-                    mRegionBarcode = barcode;
+                    activityWeakReference.get().mRegionBarcode = barcode;
                     // Start Routing
-                    if (mIndoorMap != null) {
+                    if (activityWeakReference.get().mIndoorMap != null) {
                         Location location = new Location(
                             popUpRegion.getGeoFenceData().getCenterPoint().getLongitude(),
                             popUpRegion.getGeoFenceData().getCenterPoint().getLatitude(),
                             0);
-                        mIndoorMap.navigateToLocation(location);
+                        activityWeakReference.get().mIndoorMap.navigateToLocation(location);
                     }
                 }
             }

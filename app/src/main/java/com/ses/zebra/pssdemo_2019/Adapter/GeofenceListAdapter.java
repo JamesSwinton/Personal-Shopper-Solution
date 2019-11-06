@@ -29,8 +29,8 @@ public class GeofenceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
   private static final int POPULATED_GEOFENCE_LIST_VIEW_TYPE = 1;
 
   // Variables
-  private static List<PopUpRegion> mPopUpRegions;
-  private static EditOrDeleteGeofenceCallback mEditOrDeleteGeofenceCallback;
+  private List<PopUpRegion> mPopUpRegions;
+  private EditOrDeleteGeofenceCallback mEditOrDeleteGeofenceCallback;
 
   public GeofenceListAdapter(EditOrDeleteGeofenceCallback editOrDeleteGeofenceCallback) {
     mPopUpRegions = new ArrayList<>(Arrays.asList(App.mPopUpRegions));
