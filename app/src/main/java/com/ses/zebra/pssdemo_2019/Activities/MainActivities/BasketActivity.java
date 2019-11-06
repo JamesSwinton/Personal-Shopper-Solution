@@ -52,8 +52,7 @@ import com.symbol.emdk.barcode.ScannerException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasketActivity extends BaseActivity implements Scanner.DataListener,
-        SensorEventListener {
+public class BasketActivity extends BaseActivity implements Scanner.DataListener {
 
     // Debugging
     private static final String TAG = "BasketActivity";
@@ -274,10 +273,6 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
         super.onResume();
         // Enable Scanner
         mDataBinding.basketListRecyclerView.postDelayed(this::enableScanner, 100);
-//        if (mHandsFreeMode) {
-//            mSensorManager.registerListener(this, mProximitySensor,
-//                    SensorManager.SENSOR_DELAY_NORMAL);
-//        }
     }
 
     @Override
@@ -285,72 +280,6 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
         super.onPause();
         // Disable Scanner
         disableScanner();
-        // Unregister Proximity Sensor if already registered
-//        mSensorManager.unregisterListener(this);
-    }
-
-    private void initHandsFreeListener() {
-//        mDataBinding.handsFreeButton.setOnCheckedChangeListener((button, checked) -> {
-//            // Log Change
-//            Logger.i(TAG, "Hands Free Enabled: " + checked);
-//            // Set HandsFree Boolean
-//            mHandsFreeMode = checked;
-//            // Enable Proximity Sensor
-//            if (mHandsFreeMode) {
-//                enableProximitySensor();
-//            } else {
-//                disableProximitySensor();
-//            }
-//        });
-    }
-
-    private void enableProximitySensor() {
-        Log.i(TAG, String.valueOf(mProximitySensor == null));
-        mSensorManager.registerListener(this, mProximitySensor,
-                SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    private void disableProximitySensor() {
-        // Unregister Listener
-        mSensorManager.unregisterListener(this);
-
-        // Cancel Pending Read -> Set Trigger to HARD
-        try {
-            if (App.mScanner.isReadPending()) { App.mScanner.cancelRead(); }
-            // Update Trigger Type
-            App.mScanner.triggerType = Scanner.TriggerType.HARD;
-            // Start Read
-            App.mScanner.read();
-        } catch (ScannerException e) {
-            Logger.e(TAG, "ScannerException: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.i(TAG, "Proximity Sensor Fired! | Distance: " + sensorEvent.values[0]);
-
-        // Cancel Pending Read -> Set Trigger to SOFT_ONCE
-        try {
-            if (sensorEvent.values[0] >= mProximitySensor.getMaximumRange()) {
-                Logger.i(TAG, "Proximity Sensor Triggered - Distance too far, try again");
-            } else {
-                Logger.i(TAG, "Proximity Sensor Triggered - Init Soft Scan");
-                // Cancel Pending Read
-                if (App.mScanner.isReadPending()) { App.mScanner.cancelRead(); }
-                // Update Trigger Type
-                App.mScanner.triggerType = Scanner.TriggerType.SOFT_ONCE;
-                // Start Read
-                App.mScanner.read();
-            }
-        } catch (ScannerException e) {
-            Logger.e(TAG, "ScannerException: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 
     private void enableScanner() {
