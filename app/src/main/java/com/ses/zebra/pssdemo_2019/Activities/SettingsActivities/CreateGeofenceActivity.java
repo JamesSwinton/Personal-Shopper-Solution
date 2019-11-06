@@ -146,7 +146,7 @@ public class CreateGeofenceActivity extends BaseActivity {
   private void initialiseIndoorPositioning() {
     String configString = getConfig();
     Logger.i(TAG, "Init VLC with config string: " + configString);
-    mIndoorPositioning = new IndoorPositioning(getApplicationContext());
+    mIndoorPositioning = new IndoorPositioning(this);
     mIndoorPositioning.setConfiguration(getConfig());
     mIndoorPositioning.setMode(IndoorPositioning.IndoorPositioningMode.DEFAULT);
     mIndoorPositioning.setHeadingOrientation(IndoorPositioning.IndoorPositioningHeadingOrientation.PORTRAIT);
@@ -193,43 +193,47 @@ public class CreateGeofenceActivity extends BaseActivity {
     }
 
     // Load Map
-    mMapFragment.loadMap(mapFilePath, onMapReadyCallback());
+    mMapFragment.loadMap(mapFilePath, onMapReadyCallback);
 
     // Show Map Fragment
     getSupportFragmentManager().beginTransaction().replace(R.id.map_container, mMapFragment)
         .commit();
   }
 
-  private OnMapReadyCallback onMapReadyCallback() {
-    return map -> {
+  private OnMapReadyCallback onMapReadyCallback = new OnMapReadyCallback() {
+    @Override
+    public void onMapReady(Map map) {
       Logger.i(TAG, "Map Ready");
       mIndoorMap = com.philips.indoormaps.map.Map.getInstance();
-      mIndoorMap.setOnMapTouchListener(onMapTouchListener());
-      mIndoorMap.setOnMapStatusChangedListener(onMapStatusChangedListener());
-      mIndoorMap.setOnAnnotationTouchListener(onMapAnnotationTouchListener());
+      mIndoorMap.setOnMapTouchListener(onMapTouchListener);
+      mIndoorMap.setOnMapStatusChangedListener(onMapStatusChangedListener);
+      mIndoorMap.setOnAnnotationTouchListener(onMapAnnotationTouchListener);
       mIndoorMap.setStyle("{\"userLocationColor\":\"#007CB0\", \"routeLineColor\":\"#007CB0\", " +
-          "\"floorSelectionColor\":\"#007CB0\"}");
+              "\"floorSelectionColor\":\"#007CB0\"}");
 
       // Remove Existing Annotation
       for (Annotation annotation : mIndoorMap.getAnnotations(0)) {
         mIndoorMap.removeAnnotation(annotation);
       }
-    };
-  }
+    }
+  };
 
-  private OnAnnotationTouchListener onMapAnnotationTouchListener() {
-    return annotation ->
-        Log.i(TAG, "onMapAnnotationTouchListener: Annotation Touched: " + annotation.getId() +
-            " | Latitude: " + annotation.getLocation().getLatitude() + " | Longitude: " +
-            annotation.getLocation().getLongitude());
-  }
+  private OnAnnotationTouchListener onMapAnnotationTouchListener = new OnAnnotationTouchListener() {
+    @Override
+    public void onAnnotationTouch(Annotation annotation) {
+      Log.i(TAG, "onMapAnnotationTouchListener: Annotation Touched: " + annotation.getId() +
+              " | Latitude: " + annotation.getLocation().getLatitude() + " | Longitude: " +
+              annotation.getLocation().getLongitude());
+    }
+  };
 
-  private OnMapTouchListener onMapTouchListener() {
-    return location -> {
+  private OnMapTouchListener onMapTouchListener = new OnMapTouchListener() {
+    @Override
+    public void onMapTouched(Location location) {
       // Log Map Touch
       Log.i(TAG, "onMapAnnotationTouchListener: Map Touched - Longitude: " +
-          location.getLongitude() + " | Latitude: " + location.getLatitude() +
-          " | Level: " + location.getFloorLevel());
+              location.getLongitude() + " | Latitude: " + location.getLatitude() +
+              " | Level: " + location.getFloorLevel());
 
       // Remove Existing Geofence Annotation
       for (Annotation annotation : mIndoorMap.getAnnotations(0)) {
@@ -238,9 +242,9 @@ public class CreateGeofenceActivity extends BaseActivity {
 
       // Get & Set Geofence Data
       mGeofenceData = GeofenceHelper.createCircularGeofence(
-          location.getLatitude(),
-          location.getLongitude(),
-          Double.parseDouble(mDataBinding.regionSize.getText().toString())
+              location.getLatitude(),
+              location.getLongitude(),
+              Double.parseDouble(mDataBinding.regionSize.getText().toString())
       );
 
       // Create Annotations
@@ -248,16 +252,16 @@ public class CreateGeofenceActivity extends BaseActivity {
       for (VertexPoint vertexPoint : mGeofenceData.getVertexPoints()) {
         // Create Location from Vertex
         Location vertexLocation = new Location(vertexPoint.getLongitude(), vertexPoint.getLatitude(),
-            location.getFloorLevel());
+                location.getFloorLevel());
         // Create Annotation & Add to List
         vertexAnnotations.add(new Annotation(vertexLocation, mAnnotationBitmap, false,
-            mAnnotationBitmapSize, String.valueOf(mGeofenceData.getCenterPoint().getLatitude())));
+                mAnnotationBitmapSize, String.valueOf(mGeofenceData.getCenterPoint().getLatitude())));
       }
 
       // Draw Vertex Annotations
       mIndoorMap.addAnnotations(vertexAnnotations);
-    };
-  }
+    }
+  };
 
   private void returnGeofenceObjectAndExit() {
     // Validate Geofence
@@ -294,18 +298,17 @@ public class CreateGeofenceActivity extends BaseActivity {
    *
    * @return Instance of OnMapStatusChangedListener
    */
-  private OnMapStatusChangedListener onMapStatusChangedListener() {
-    return new OnMapStatusChangedListener() {
-      @Override
-      public void onUserLocationStatusChanged(UserLocationStatus userLocationStatus) { }
-      @Override
-      public void onRouteDistanceChanged(float v) { }
-      @Override
-      public void onRouteErrorNoCrossFloor(int i) { }
-      @Override
-      public void onMultiPointDistancesChanged(List<java.util.Map<String, Object>> list) { }
-    };
-  }
+
+  private OnMapStatusChangedListener onMapStatusChangedListener = new OnMapStatusChangedListener() {
+    @Override
+    public void onUserLocationStatusChanged(UserLocationStatus userLocationStatus) { }
+    @Override
+    public void onRouteDistanceChanged(float v) { }
+    @Override
+    public void onRouteErrorNoCrossFloor(int i) { }
+    @Override
+    public void onMultiPointDistancesChanged(List<java.util.Map<String, Object>> list) { }
+  };
 
   /**
    * Callback method for receiving and handling Location data from VLC SDK
