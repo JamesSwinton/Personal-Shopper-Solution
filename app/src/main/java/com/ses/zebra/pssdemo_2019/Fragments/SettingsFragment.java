@@ -46,14 +46,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String AUTO_SCAN_ACTIVITY = "com.symbol.autoscanmgrsetting.AutoScanActivity";
 
     // Variables
-    private static List<Preference> mPreferences = new ArrayList<>();
-    private static Preference mPrefCurrentTopic;
-    private static Preference mPrefEditStockList;
+    private List<Preference> mPreferences = new ArrayList<>();
+    private Preference mPrefCurrentTopic;
+    private Preference mPrefEditStockList;
 
-    private static Preference mHandsFreeScanningPreference;
-    private static Preference mEnableWfcPreference;
-    private static Preference mEnableVlcPreference;
-    private static Preference mEnableContextualVoicePreference;
+    private Preference mHandsFreeScanningPreference;
+    private Preference mEnableWfcPreference;
+    private Preference mEnableVlcPreference;
+    private Preference mEnableContextualVoicePreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
