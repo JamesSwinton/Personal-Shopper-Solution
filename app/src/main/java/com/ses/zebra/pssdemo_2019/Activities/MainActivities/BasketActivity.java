@@ -49,6 +49,7 @@ import com.symbol.emdk.barcode.ScanDataCollection;
 import com.symbol.emdk.barcode.Scanner;
 import com.symbol.emdk.barcode.ScannerException;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,13 +71,9 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
     // Variables
     private ActivityBasketBinding mDataBinding;
 
-    public static List<BasketItem> mBasketList = new ArrayList<>();
-    private static BasketActivity mBasketActivity;
-    private static BasketListAdapter mBasketListAdapter;
-
-    private static boolean mHandsFreeMode;
-    private static Sensor mProximitySensor;
-    private static SensorManager mSensorManager;
+    public List<BasketItem> mBasketList = new ArrayList<>();
+    private BasketActivity mBasketActivity;
+    private BasketListAdapter mBasketListAdapter;
 
     @Override
     protected String getInheritedTag() {
@@ -315,7 +312,7 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
         // Check if "End Shop" code was scanned
         for (ScanDataCollection.ScanData scanData : scannedData) {
             if (scanData.getData().equals(END_SHOP) || scanData.getData().equals(END_SHOP_UPPERCASE)) {
-                if (BasketActivity.mBasketList != null &&BasketActivity. mBasketList.size() > 0) {
+                if (mBasketList != null && mBasketList.size() > 0) {
                     displayActivity(EndShopActivity.class);
                 } else {
                     Toast.makeText(this, "Basket is empty, cannot end shop",
@@ -325,10 +322,17 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
         }
 
         // If not End shop -> Parse Barcode
-        new getProductsFromBarcode().execute(scannedData);
+        new getProductsFromBarcode(new WeakReference<>(this)).execute(scannedData);
     }
 
     public static class getProductsFromBarcode extends AsyncTask<ScanDataCollection.ScanData, Void, StockItem> {
+
+        WeakReference<BasketActivity> mContextWeakReference;
+
+        getProductsFromBarcode(WeakReference<BasketActivity> contextWeakReference) {
+            mContextWeakReference = contextWeakReference;
+        }
+
         @Override
         protected StockItem doInBackground(ScanDataCollection.ScanData... scanDataArray) {
             for (ScanDataCollection.ScanData scanData : scanDataArray) {
@@ -345,19 +349,23 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
 
         @Override
         protected void onPostExecute(StockItem stockItem) {
+            // check context
+            BasketActivity activityContext = mContextWeakReference.get();
+            if (activityContext == null || activityContext.isFinishing()) return;
+
             // Handle product not found
             if (stockItem == null) {
                 Log.e(TAG, "Product does not exist in Stock List");
-                mBasketActivity.showScanDialog(false, 0.0);
+                activityContext.showScanDialog(false, 0.0);
                 return;
             }
 
             // Show Dialog
-            mBasketActivity.showScanDialog(true, stockItem.getDiscount());
+            activityContext.showScanDialog(true, stockItem.getDiscount());
 
             // Update Item if Already in Basket
             boolean itemInBasket = false;
-            for (BasketItem basketItem : mBasketList) {
+            for (BasketItem basketItem : activityContext.mBasketList) {
                 if (basketItem.getBarcode().equals(stockItem.getBarcode())) {
                     // Update Holder
                     itemInBasket = true;
@@ -369,10 +377,10 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
                             : calculateDiscount(stockItem.getPrice(), stockItem.getDiscount(),
                                                 basketItem.getQuantity()));
                     // Update Basket List
-                    mBasketActivity.updateBasketTotal();
-                    mBasketListAdapter.notifyDataSetChanged();
-                    mBasketActivity.mDataBinding.basketListRecyclerView.scrollToPosition(
-                            mBasketList.size() -1);
+                    activityContext.mBasketActivity.updateBasketTotal();
+                    activityContext.mBasketListAdapter.notifyDataSetChanged();
+                    activityContext.mBasketActivity.mDataBinding.basketListRecyclerView.scrollToPosition(
+                            activityContext.mBasketList.size() -1);
                 }
             }
 
@@ -394,12 +402,12 @@ public class BasketActivity extends BaseActivity implements Scanner.DataListener
                 basketItem.setAllergenAdvice(stockItem.getAllergenAdvice());
                 basketItem.setNutritionalInfoValues(stockItem.getNutritionalInfoValues());
                 // Add To Basket
-                mBasketList.add(basketItem);
+                activityContext.mBasketList.add(basketItem);
                 // Update Basket List
-                mBasketActivity.updateBasketTotal();
-                mBasketListAdapter.notifyDataSetChanged();
-                mBasketActivity.mDataBinding.basketListRecyclerView.scrollToPosition(
-                        mBasketList.size() -1);
+                activityContext.mBasketActivity.updateBasketTotal();
+                activityContext.mBasketListAdapter.notifyDataSetChanged();
+                activityContext.mBasketActivity.mDataBinding.basketListRecyclerView.scrollToPosition(
+                        activityContext.mBasketList.size() -1);
             }
         }
     }
