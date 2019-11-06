@@ -70,6 +70,8 @@ dependencies {
     implementation files('libs/ini4j-0.5.4.jar')
     // Glide Image Processing Library
     implementation 'com.github.bumptech.glide:glide:4.8.0'
+    // Leak Detection
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-3'
     // WFC Libraries
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'commons-lang:commons-lang:2.6'
